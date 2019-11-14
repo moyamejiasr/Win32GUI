@@ -49,18 +49,18 @@ int main() {
 ```
 
 # Development
-- Window 80%
-- TextView 90%
-- EditText 60%
+- Window 90%
+- TextView 95%
+- EditText 90%
 - PictureBox 0%
-- Button 70%
+- Button 90%
 - ImageButton 0%
-- CheckBox 70%
+- CheckBox 90%
 - GroupBox 0%
 - ProgressBar 0%
 - ListBox 0%
 - TreeView 0%
 - ComboBox 0%
 - TrackBar 0%
-- TopBar 0%
-- ContextMenu 0%
+- TopMenuBar 50%
+- ContextMenu 70%

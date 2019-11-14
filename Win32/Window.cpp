@@ -105,14 +105,10 @@ void Window::setDraggable(bool state)
 
 void Window::setFocusable(bool state)
 {
-	mFocusable = state;
-	if (mCreated)
-	{
-		if (!mFocusable)
-			appendFlagEx(WS_EX_NOACTIVATE);
-		else
-			removeFlagEx(WS_EX_NOACTIVATE);
-	}
+	if (!state)
+		appendFlagEx(WS_EX_NOACTIVATE);
+	else
+		removeFlagEx(WS_EX_NOACTIVATE);
 }
 
 void Window::setAlpha(BYTE alpha)
@@ -123,42 +119,34 @@ void Window::setAlpha(BYTE alpha)
 
 void Window::allowMaximize(bool state)
 {
-	mMaximizeBox = state;
-	if (mCreated)
-		if (mMaximizeBox)
-			appendFlag(WS_MAXIMIZEBOX);
-		else
-			removeFlag(WS_MAXIMIZEBOX);
+	if (state)
+		appendFlag(WS_MAXIMIZEBOX);
+	else
+		removeFlag(WS_MAXIMIZEBOX);
 }
 
 void Window::allowMinimize(bool state)
 {
-	mMinimizeBox = state;
-	if (mCreated)
-		if (mMinimizeBox)
-			appendFlag(WS_MINIMIZEBOX);
-		else
-			removeFlag(WS_MINIMIZEBOX);
+	if (state)
+		appendFlag(WS_MINIMIZEBOX);
+	else
+		removeFlag(WS_MINIMIZEBOX);
 }
 
 void Window::allowTitleBar(bool state)
 {
-	mTitleBar = state;
-	if (mCreated)
-		if (mTitleBar)
-			appendFlag(WS_POPUPWINDOW);
-		else
-			removeFlag(WS_POPUPWINDOW);
+	if (state)
+		appendFlag(WS_POPUPWINDOW);
+	else
+		removeFlag(WS_POPUPWINDOW);
 }
 
 void Window::allowResize(bool state)
 {
-	mResizable = state;
-	if (mCreated)
-		if (mResizable)
-			appendFlag(WS_THICKFRAME);
-		else
-			removeFlag(WS_THICKFRAME);
+	if (state)
+		appendFlag(WS_THICKFRAME);
+	else
+		removeFlag(WS_THICKFRAME);
 }
 
 void Window::setMinSize(int width, int height)
@@ -171,6 +159,19 @@ void Window::setMaxSize(int width, int height)
 {
 	mMaxWidth = width;
 	mMaxHeight = height;
+}
+
+void Window::setMenuBar(ControlMenu* ctl)
+{
+	if (mMenuBar != nullptr)
+	{
+		DestroyMenu(mMenuBar);
+		mMenuBar = nullptr;
+	}
+	if (ctl != nullptr)
+		mMenuBar = ctl->getHMenu();
+	SetMenu(mHwnd, mMenuBar);
+
 }
 
 void Window::setMinMaxInfo(LPARAM& lParam)
@@ -207,8 +208,31 @@ void Window::callMouseWheel(WPARAM wParam)
 
 void Window::callMouseClick(WPARAM wParam, LPARAM lParam)
 {
+	if (wParam == MK_RBUTTON)
+		mPrevHover->showContextMenu();
+
 	if (mOnMouseClick != nullptr)
 		mOnMouseClick(this, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam), wParam);
+}
+
+void Window::callChildMouseClick(WPARAM wParam, LPARAM lParam)
+{
+	if (LOWORD(wParam) == WM_RBUTTONDOWN)
+		mPrevHover->showContextMenu();
+
+	if (mOnMouseClick != nullptr)
+		switch (LOWORD(wParam))
+		{
+		case WM_LBUTTONDOWN:
+			mOnMouseClick(this, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam), MK_LBUTTON);
+			break;
+		case WM_MBUTTONDOWN:
+			mOnMouseClick(this, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam), MK_MBUTTON);
+			break;
+		case WM_RBUTTONDOWN:
+			mOnMouseClick(this, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam), MK_RBUTTON);
+			break;
+		}
 }
 
 void Window::callFocusChange(WPARAM wParam)
@@ -222,7 +246,7 @@ void Window::callFocusChange(WPARAM wParam)
 
 void Window::callHoverChange(Control* child)
 {
-	if (mPrevHover == child)
+	if (mPrevHover->mHwnd == child->mHwnd)
 		return;
 
 	if (child->mOnHover != nullptr)
@@ -231,4 +255,58 @@ void Window::callHoverChange(Control* child)
 		mPrevHover->mOnHover(mPrevHover, false);
 
 	mPrevHover = child;
+}
+
+LRESULT Window::execute(UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	switch (uMsg)
+	{
+	case WM_GETMINMAXINFO: /* Window Size Limits */
+		setMinMaxInfo(lParam);
+		break;
+	case WM_SIZE: /* Window Size Changes */
+		callResize(lParam);
+		break;
+	case WM_MOVE: /* Window moved on screen */
+		callMove(lParam);
+		break;
+	case WM_MOUSEWHEEL: /* Window mouse wheel state changed */
+		callMouseWheel(wParam);
+		break;
+	case WM_PARENTNOTIFY: /* Notify Window of child click actions */
+		callChildMouseClick(wParam, lParam);
+		break;
+	case WM_LBUTTONDOWN: /* Window left cursor button click */
+	case WM_RBUTTONDOWN: /* Window right cursor button click */
+	case WM_MBUTTONDOWN: /* Window middle cursor button click */
+		callMouseClick(wParam, lParam);
+		break;
+	case WM_ACTIVATE: /* Window focus state changed */
+		callFocusChange(wParam);
+		break;
+	case WM_SETCURSOR: /* Window's control hover change detect by cursor */
+		callHoverChange(mControls[(HWND)wParam]);
+		break;
+	case WM_COMMAND: /* Execute specific child command */
+		if (mControls[(HWND)lParam] != nullptr)
+			mControls[(HWND)lParam]->execute(uMsg, wParam, lParam);
+		break;
+	case WM_NCHITTEST: /* Handle possible child window dragNdrop */
+		if (mDraggable)
+		{
+			LRESULT hit = DefWindowProc(mHwnd, uMsg, wParam, lParam);
+			if (GetAsyncKeyState(VK_LBUTTON) & VK_LBUTTON && hit == HTCLIENT)
+				return HTCAPTION;
+		}
+		break; /* Handle possible close message */
+	case WM_CLOSE:
+		close();
+		return false;
+	case WM_DESTROY: /* Window Execute close attempts */
+		eraseWithChilds();
+		if (mControls.size() == 0)
+			PostQuitMessage(0);
+		break;
+	}
+	return DefWindowProc(mHwnd, uMsg, wParam, lParam);
 }

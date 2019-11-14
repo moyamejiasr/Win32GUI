@@ -38,7 +38,7 @@ void CheckBox::setChecked(bool state)
 			mChecked ? BST_CHECKED : BST_UNCHECKED, 0);
 }
 
-void CheckBox::execute(UINT uMsg, WPARAM wParam, LPARAM lParam)
+LRESULT CheckBox::execute(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	if (HIWORD(wParam) == BN_CLICKED)
 	{
@@ -46,4 +46,5 @@ void CheckBox::execute(UINT uMsg, WPARAM wParam, LPARAM lParam)
 		if (mOnCheckChange != nullptr)
 			mOnCheckChange(this, mChecked);
 	}
+	return true;
 }

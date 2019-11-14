@@ -3,9 +3,6 @@
 
 #include "TextControl.h"
 
-using f_onClick = void(*)(Button*);
-using f_onDoubleClick = void(*)(Button*);
-
 class Button : public TextControl
 {
 public:
@@ -14,10 +11,12 @@ public:
 
 	void setOnClick(f_onClick);
 	void setOnDoubleClick(f_onDoubleClick);
+	virtual void setMargin(Margin);
+	virtual Margin getMargin();
 protected:
 	f_onClick mOnClick;
 	f_onDoubleClick mOnDoubleClick;
 
 	Button(std::string, int = 0, int = 0);
-	virtual void execute(UINT, WPARAM, LPARAM);
+	virtual LRESULT execute(UINT, WPARAM, LPARAM);
 };

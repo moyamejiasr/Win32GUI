@@ -1,10 +1,13 @@
 #pragma once
 
 #include "Window.h"
+#ifndef _MINIMAL
 #include "TextView.h"
 #include "EditText.h"
+#include "MultiEditText.h"
 #include "Button.h"
 #include "CheckBox.h"
+#endif
 
 // Get COLORREF from r, g, b values
 // Example: 255, 255, 255

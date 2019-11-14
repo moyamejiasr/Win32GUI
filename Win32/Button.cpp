@@ -25,12 +25,38 @@ void Button::setOnDoubleClick(f_onDoubleClick call)
 	mOnDoubleClick = call;
 }
 
+void Button::setMargin(Margin margin)
+{
+	removeFlag(BS_LEFT);
+	removeFlag(BS_CENTER);
+	removeFlag(BS_RIGHT);
+
+	if (margin == Margin::Left)
+		appendFlag(BS_LEFT);
+	if (margin == Margin::Center)
+		appendFlag(BS_CENTER);
+	if (margin == Margin::Right)
+		appendFlag(BS_RIGHT);
+}
+
+Margin Button::getMargin()
+{
+	if (hasFlag(BS_LEFT))
+		return Margin::Left;
+	if (hasFlag(BS_CENTER))
+		return Margin::Center;
+	if (hasFlag(BS_RIGHT))
+		return Margin::Right;
+
+	return Margin::Undefined;
+}
+
 Button::Button(std::string name, int width, int height)
 	: TextControl(name, width, height)
 {
 }
 
-void Button::execute(UINT uMsg, WPARAM wParam, LPARAM lParam)
+LRESULT Button::execute(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	switch (HIWORD(wParam))
 	{
@@ -43,4 +69,5 @@ void Button::execute(UINT uMsg, WPARAM wParam, LPARAM lParam)
 			mOnDoubleClick(this);
 		break;
 	}
+	return true;
 }

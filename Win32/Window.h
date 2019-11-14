@@ -38,6 +38,7 @@ public:
 	void allowTitleBar(bool);
 	void setMinSize(int, int);
 	void setMaxSize(int, int);
+	void setMenuBar(ControlMenu*);
 protected:
 	friend class Control;
 	f_onClose mOnClose = nullptr;
@@ -49,13 +50,9 @@ protected:
 	bool mCloseable = true;
 	bool mTopMost = false;
 	bool mDraggable = false;
-	bool mFocusable = true;
-	bool mResizable = true;
-	bool mMaximizeBox = true;
-	bool mMinimizeBox = true;
-	bool mTitleBar = true;
 	DWORD mMinWidth = 80, mMinHeight = 120;
 	DWORD mMaxWidth = 1920, mMaxHeight = 1080;
+	HMENU mMenuBar = nullptr;
 	Control* mPrevHover = this;
 
 	void setMinMaxInfo(LPARAM&);
@@ -63,6 +60,8 @@ protected:
 	void callMove(LPARAM);
 	void callMouseWheel(WPARAM);
 	void callMouseClick(WPARAM, LPARAM);
+	void callChildMouseClick(WPARAM, LPARAM);
 	void callFocusChange(WPARAM);
 	void callHoverChange(Control*);
+	virtual LRESULT execute(UINT, WPARAM, LPARAM);
 };

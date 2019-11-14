@@ -19,5 +19,5 @@ protected:
 	f_onCheckChange mOnCheckChange;
 	bool mChecked = false;
 
-	virtual void execute(UINT, WPARAM, LPARAM);
+	virtual LRESULT execute(UINT, WPARAM, LPARAM);
 };

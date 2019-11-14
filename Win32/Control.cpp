@@ -15,12 +15,12 @@ Control* Control::child(int id)
 
 void Control::show()
 {
-	setVisibility(true);
+	setVisibile(true);
 }
 
 void Control::hide()
 {
-	setVisibility(false);
+	setVisibile(false);
 }
 
 void Control::enable()
@@ -44,21 +44,17 @@ void Control::setOnHover(f_onHover call)
 	mOnHover = call;
 }
 
-void Control::setVisibility(bool state)
+void Control::setVisibile(bool state)
 {
+	// Visibility has bugs when done with
+	// flag changes instead of ShowWindow
 	if (state)
-	{
 		mStyle = mStyle | WS_VISIBLE;
-		if (mCreated)
-			ShowWindow(mHwnd, SW_SHOW);
-	}
 	else
-	{
 		mStyle = mStyle & ~WS_VISIBLE;
-		if (mCreated)
-			ShowWindow(mHwnd, SW_HIDE);
-	}
 
+	if (mCreated)
+		ShowWindow(mHwnd, state ? SW_SHOW : SW_HIDE);
 	
 }
 
@@ -97,6 +93,20 @@ void Control::setSize(int width, int height)
 	}
 }
 
+void Control::setRect(RECT rect)
+{
+	mX = rect.left;
+	mY = rect.top;
+	mWidth = rect.right;
+	mHeight = rect.bottom;
+
+	if (mCreated)
+	{
+		SetWindowPos(mHwnd, NULL, mX, mY, mWidth, mHeight, NULL);
+		updateClientRect();
+	}
+}
+
 void Control::setGlobalIcon(HICON icon)
 {
 	if (mIcon != nullptr)
@@ -105,6 +115,18 @@ void Control::setGlobalIcon(HICON icon)
 
 	if (mCreated)
 		SetClassLong(mHwnd, GCL_HICON, (LONG)mIcon);
+}
+
+void Control::setContextMenu(ContextMenu* ctl)
+{
+	if (mContextMenu != nullptr)
+	{
+		DestroyMenu(mContextMenu);
+		mContextMenu = nullptr;
+	}
+	if (ctl != nullptr)
+		mContextMenu = ctl->getHMenu();
+	SetMenu(mHwnd, mContextMenu);
 }
 
 POINT Control::getCursorPos()
@@ -122,7 +144,7 @@ POINT Control::getCursorScreenPos()
 	return p;
 }
 
-HWND Control::getHwnd()
+HWND Control::getHWnd()
 {
 	return mHwnd;
 }
@@ -162,12 +184,65 @@ int Control::getClientHeight()
 	return mClientHeight;
 }
 
+RECT Control::getRect()
+{
+	return RECT{ 
+		mX, mY, 
+		mWidth, mHeight 
+	};
+}
+
+RECT Control::getClientRect()
+{
+	return RECT{
+		0, 0,
+		mClientWidth, mClientHeight
+	};
+}
+
+bool Control::hasFlag(DWORD flag)
+{
+	return mStyle & flag;
+}
+
+void Control::appendFlag(DWORD flag)
+{
+	mStyle |= flag;
+	if (mCreated)
+		SetWindowLong(mHwnd, GWL_STYLE, mStyle);
+}
+
+void Control::removeFlag(DWORD flag)
+{
+	mStyle &= ~flag;
+	if (mCreated)
+		SetWindowLong(mHwnd, GWL_STYLE, mStyle);
+}
+
+bool Control::hasFlagEx(DWORD flag)
+{
+	return mExStyle & flag;
+}
+
+void Control::appendFlagEx(DWORD flag)
+{
+	mExStyle |= flag;
+	if (mCreated)
+		SetWindowLong(mHwnd, GWL_EXSTYLE, mExStyle);
+}
+
+void Control::removeFlagEx(DWORD flag)
+{
+	mExStyle &= ~flag;
+	if (mCreated)
+		SetWindowLong(mHwnd, GWL_EXSTYLE, mExStyle);
+}
+
 void Control::setText(std::string txt)
 {
 	mText = txt;
-	if (mCreated) {
-		SetWindowText(mHwnd, txt.c_str());
-	}
+	if (mCreated)
+		SetWindowText(mHwnd, mText.c_str());
 }
 
 std::string Control::getText()
@@ -226,7 +301,7 @@ bool Control::create()
 		updateClientRect();
 		if (mParent != nullptr)
 		{
-			mMenu = (HMENU)mParent->mChildrens.size();
+			mId = (HMENU)mParent->mChildrens.size();
 			mParent->mChildrens.push_back(this);
 		}
 	}
@@ -307,28 +382,13 @@ void Control::updateWindowRect()
 	}
 }
 
-void Control::appendFlag(DWORD flag)
+void Control::showContextMenu()
 {
-	DWORD flags = GetWindowLong(mHwnd, GWL_STYLE);
-	SetWindowLong(mHwnd, GWL_STYLE, flags | flag);
-}
-
-void Control::removeFlag(DWORD flag)
-{
-	DWORD flags = GetWindowLong(mHwnd, GWL_STYLE);
-	SetWindowLong(mHwnd, GWL_STYLE, flags & ~flag);
-}
-
-void Control::appendFlagEx(DWORD flag)
-{
-	DWORD flags = GetWindowLong(mHwnd, GWL_EXSTYLE);
-	SetWindowLong(mHwnd, GWL_EXSTYLE, flags | flag);
-}
-
-void Control::removeFlagEx(DWORD flag)
-{
-	DWORD flags = GetWindowLong(mHwnd, GWL_EXSTYLE);
-	SetWindowLong(mHwnd, GWL_EXSTYLE, flags & ~flag);
+	if (mContextMenu != nullptr)
+	{
+		POINT p = getCursorScreenPos();
+		TrackPopupMenu(mContextMenu, NULL, p.x, p.y, NULL, mHwnd, NULL);
+	}
 }
 
 std::string Control::pullWindowText()
@@ -341,88 +401,20 @@ std::string Control::pullWindowText()
 	return result;
 }
 
-#include "Window.h"
-#include "TextView.h"
-#include "EditText.h"
-
-void Control::execute(UINT uMsg, WPARAM wParam, LPARAM lParam)
+LRESULT Control::execute(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 #ifdef _DEBUG
-	std::cout << "undefined exe for " << lParam << std::endl;
+	std::cout << "undefined execute for " << lParam << std::endl;
 #endif
+	return false;
 }
 
 LRESULT CALLBACK Control::WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-#ifdef Win32MSG
-	std::cout << "MSG " << uMsg << std::endl;
+#ifdef _DEBUG_MSG
+	std::cout << uMsg << std::endl;
 #endif
-	switch (uMsg)
-	{
-	/* Window Size Limits */
-	case WM_GETMINMAXINFO:
-		if (mControls[hwnd] != nullptr)
-			((Window*)mControls[hwnd])->setMinMaxInfo(lParam);
-		break;
-	/* Window Size Changes */
-	case WM_SIZE:
-		if (mControls[hwnd] != nullptr)
-			((Window*)mControls[hwnd])->callResize(lParam);
-		break;
-	/* Window moved on screen */
-	case WM_MOVE:
-		if (mControls[hwnd] != nullptr)
-			((Window*)mControls[hwnd])->callMove(lParam);
-		break;
-	/* Window mouse wheel state changed */
-	case WM_MOUSEWHEEL:
-		if (mControls[hwnd] != nullptr)
-			((Window*)mControls[hwnd])->callMouseWheel(wParam);
-		break;
-	/* Window cursor button click */
-	case WM_LBUTTONDOWN:
-	case WM_RBUTTONDOWN:
-	case WM_MBUTTONDOWN:
-		if (mControls[hwnd] != nullptr)
-			((Window*)mControls[hwnd])->callMouseClick(wParam, lParam);
-		break;
-	/* Window focus state changed */
-	case WM_ACTIVATE:
-		if (mControls[hwnd] != nullptr)
-			((Window*)mControls[hwnd])->callFocusChange(wParam);
-		break;
-	/* Window's control hover change detect by cursor */
-	case WM_SETCURSOR:
-		if (mControls[hwnd] != nullptr)
-			((Window*)mControls[hwnd])->callHoverChange(mControls[(HWND)wParam]);
-		break;
-	/* Define hit area (good for drag&drop) */
-	case WM_NCHITTEST:
-		if (mControls[hwnd] != nullptr && ((Window*)mControls[hwnd])->mDraggable)
-		{
-			LRESULT hit = DefWindowProc(hwnd, uMsg, wParam, lParam);
-			if (GetAsyncKeyState(VK_LBUTTON) & VK_LBUTTON && hit == HTCLIENT)
-				return HTCAPTION;
-		}
-		break;
-	case WM_COMMAND:
-		if (mControls[(HWND)lParam] != nullptr)
-			mControls[(HWND)lParam]->execute(uMsg, wParam, lParam);
-		break;
-	/* Window close attempts */
-	case WM_CLOSE:
-		if (mControls[hwnd] != nullptr)
-			((Window*)mControls[hwnd])->close();
-		return false;
-	/* Window Execute close attempts */
-	case WM_DESTROY:
-		if (mControls[hwnd] != nullptr)
-		{
-			mControls[hwnd]->eraseWithChilds();
-			if (mControls.size() == 0)
-				PostQuitMessage(0);
-		}
-		break;
-	}
+	if (mControls[hwnd] != nullptr)
+		return mControls[hwnd]->execute(uMsg, wParam, lParam);
 	return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }

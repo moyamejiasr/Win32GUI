@@ -3,15 +3,35 @@
 
 #include "TextControl.h"
 
+using f_onCharLimit = void(*)(EditText*);
+
+enum TextCase {
+	Normal,
+	UpperCase,
+	LowerCase
+};
+
 class EditText : public TextControl
 {
 public:
 	EditText();
 	EditText(Control*, std::string, int = 0, int = 0);
 
+	void replaceSelection(std::string);
+	void setOnCharLimit(f_onCharLimit);
 	void setCharLimit(int);
+	void setSelection(int, int);
+	void setNumbersOnly(bool);
+	void setReadOnly(bool);
+	void setPassword(bool);
+	void setTextCase(TextCase);
+	std::string getSelection();
+	virtual void setMargin(Margin);
+	virtual Margin getMargin();
 protected:
-	int mCharLimit;
+	EditText(std::string, int = 0, int = 0);
+	f_onCharLimit mOnCharLimit = nullptr;
+	int mCharLimit = 0;
 
-	virtual void execute(UINT, WPARAM, LPARAM);
+	virtual LRESULT execute(UINT, WPARAM, LPARAM);
 };

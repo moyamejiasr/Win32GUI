@@ -19,10 +19,34 @@ void TextControl::setAutosize(bool state, int x, int y)
 		autoSize();
 }
 
+void TextControl::setMargin(Margin margin)
+{
+#ifdef _DEBUG
+	std::cout << "undefined setMargin for " << mHwnd << std::endl;
+#endif
+}
+
 void TextControl::setText(std::string txt) 
 {
 	Control::setText(txt);
 	autoSize();
+}
+
+void TextControl::setSize(int width, int height)
+{
+	setAutosize(false);
+	Control::setSize(width, height);
+}
+
+void TextControl::setRect(RECT rect)
+{
+	setAutosize(false);
+	Control::setRect(rect);
+}
+
+Margin TextControl::getMargin()
+{
+	return Margin::Undefined;
 }
 
 void TextControl::autoSize()
