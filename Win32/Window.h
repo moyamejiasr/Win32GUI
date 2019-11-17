@@ -6,9 +6,16 @@
 using f_onClose = bool(*)(Window*);
 using f_onResize = void(*)(Window*, int, int);
 using f_onMove = void(*)(Window*, int, int);
+using f_onFocus = void(*)(Window*, bool);
 using f_onMouseWheel = void(*)(Window*, int, int);
 using f_onMouseClick = void(*)(Window*, int, int, int);
-using f_onFocus = void(*)(Window*, bool);
+
+enum MouseKeys {
+	LeftButton		= WM_LBUTTONDOWN,
+	RightButton		= WM_RBUTTONDOWN,
+	CenterButton	= WM_MBUTTONDOWN,
+	OtherButton		= WM_XBUTTONDOWN,
+};
 
 class Window : public Control
 {
@@ -21,6 +28,7 @@ public:
 	void minimize();
 	void maximize();
 	void restore();
+	void redrawMenu();
 	void setOnClose(f_onClose);
 	void setOnResize(f_onResize);
 	void setOnMove(f_onMove);
@@ -38,7 +46,7 @@ public:
 	void allowTitleBar(bool);
 	void setMinSize(int, int);
 	void setMaxSize(int, int);
-	void setMenuBar(ControlMenu*);
+	void setMenu(HMENU);
 protected:
 	friend class Control;
 	f_onClose mOnClose = nullptr;
@@ -59,8 +67,7 @@ protected:
 	void callResize(LPARAM);
 	void callMove(LPARAM);
 	void callMouseWheel(WPARAM);
-	void callMouseClick(WPARAM, LPARAM);
-	void callChildMouseClick(WPARAM, LPARAM);
+	void callMouseClick(DWORD, LPARAM);
 	void callFocusChange(WPARAM);
 	void callHoverChange(Control*);
 	virtual LRESULT execute(UINT, WPARAM, LPARAM);

@@ -55,5 +55,7 @@ void TextControl::autoSize()
 		return;
 	SIZE size;
 	GetTextExtentPoint32(GetDC(mHwnd), mText.c_str(), mText.size(), &size);
-	setSize(size.cx + mXMargin, size.cy + mYMargin);
+	mWidth = size.cx + mXMargin;
+	mHeight = size.cy + mYMargin;
+	setSize(mWidth, mHeight);
 }

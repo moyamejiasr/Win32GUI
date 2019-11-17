@@ -8,50 +8,65 @@
 #include <string>
 #include <vector>
 
-class ControlMenu;
-class ContextMenu;
+class MenuStrip;
+class ContextMenuStrip;
 
 class MenuItem
 {
 public:
-	MenuItem();
-	MenuItem(std::string);
+	MenuItem(int);
+	MenuItem(int, std::string);
 
 	void setSeparator(bool);
 	void setEnabled(bool);
 	void setText(std::string);
 	void setBitmap(HBITMAP);
-	void setSubMenu(ContextMenu*);
+	void setSubMenu(ContextMenuStrip*);
+	bool separator();
+	bool enabled();
+	int getId();
+	std::string getText();
+	HBITMAP getBitmap();
+	ContextMenuStrip* getSubMenu();
 protected:
-	friend class MenuBuilder;
+	friend class MenuControl;
 	MENUITEMINFO mInfo{};
 	std::string mText;
+	MenuControl* mParent = nullptr;
+	ContextMenuStrip* mSubMenu = nullptr;
+
+	void updateChanges();
 };
 
-class MenuBuilder
+class MenuControl
 {
 public:
-	void destroy();
-	void insert(int, MenuItem);
-	void insert(MenuItem);
-	HMENU getHMenu();
+	~MenuControl();
+
+	void free();
+	void add(MenuItem*);
+	void remove(int);
+	int size();
+	MenuItem* at(int);
+	MenuItem* byId(int);
+	HMENU hmenu();
 protected:
-	MenuBuilder();
+	MenuControl();
 	HMENU mHMenu = nullptr;
-	int mCount = 0;
+	std::vector<MenuItem*> mItems;
 };
 
-class ControlMenu : public MenuBuilder
+class MenuStrip : public MenuControl
 {
 public:
-	ControlMenu();
+	MenuStrip();
 protected:
 };
 
-class ContextMenu : public MenuBuilder
+class ContextMenuStrip : public MenuControl
 {
 public:
-	ContextMenu();
+	ContextMenuStrip();
 protected:
 	friend class MenuItem;
 };

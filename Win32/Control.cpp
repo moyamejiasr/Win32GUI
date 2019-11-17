@@ -44,6 +44,11 @@ void Control::setOnHover(f_onHover call)
 	mOnHover = call;
 }
 
+void Control::setOnMenuClick(f_onMenuClick call)
+{
+	mOnMenuClick = call;
+}
+
 void Control::setVisibile(bool state)
 {
 	// Visibility has bugs when done with
@@ -117,16 +122,9 @@ void Control::setGlobalIcon(HICON icon)
 		SetClassLong(mHwnd, GCL_HICON, (LONG)mIcon);
 }
 
-void Control::setContextMenu(ContextMenu* ctl)
+void Control::setContextMenu(HMENU ctl)
 {
-	if (mContextMenu != nullptr)
-	{
-		DestroyMenu(mContextMenu);
-		mContextMenu = nullptr;
-	}
-	if (ctl != nullptr)
-		mContextMenu = ctl->getHMenu();
-	SetMenu(mHwnd, mContextMenu);
+	mContextMenu = ctl;
 }
 
 POINT Control::getCursorPos()
@@ -144,7 +142,7 @@ POINT Control::getCursorScreenPos()
 	return p;
 }
 
-HWND Control::getHWnd()
+HWND Control::hwnd()
 {
 	return mHwnd;
 }
@@ -382,12 +380,12 @@ void Control::updateWindowRect()
 	}
 }
 
-void Control::showContextMenu()
+void Control::showContextMenu(HWND window)
 {
 	if (mContextMenu != nullptr)
 	{
 		POINT p = getCursorScreenPos();
-		TrackPopupMenu(mContextMenu, NULL, p.x, p.y, NULL, mHwnd, NULL);
+		TrackPopupMenu(mContextMenu, NULL, p.x, p.y, NULL, window, NULL);
 	}
 }
 

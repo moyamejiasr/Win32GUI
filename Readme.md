@@ -49,7 +49,7 @@ int main() {
 ```
 
 # Development
-- Window 90%
+- Window 95%
 - TextView 95%
 - EditText 90%
 - PictureBox 0%
@@ -62,5 +62,5 @@ int main() {
 - TreeView 0%
 - ComboBox 0%
 - TrackBar 0%
-- TopMenuBar 50%
-- ContextMenu 70%
+- TopMenuBar 90%
+- ContextMenu 90%

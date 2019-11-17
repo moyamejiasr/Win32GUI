@@ -51,6 +51,11 @@ void Window::restore()
 		ShowWindow(mHwnd, SW_RESTORE);
 }
 
+void Window::redrawMenu()
+{
+	DrawMenuBar(mHwnd);
+}
+
 void Window::setOnClose(f_onClose call)
 {
 	mOnClose = call;
@@ -161,15 +166,9 @@ void Window::setMaxSize(int width, int height)
 	mMaxHeight = height;
 }
 
-void Window::setMenuBar(ControlMenu* ctl)
+void Window::setMenu(HMENU ctl)
 {
-	if (mMenuBar != nullptr)
-	{
-		DestroyMenu(mMenuBar);
-		mMenuBar = nullptr;
-	}
-	if (ctl != nullptr)
-		mMenuBar = ctl->getHMenu();
+	mMenuBar = ctl;
 	SetMenu(mHwnd, mMenuBar);
 
 }
@@ -206,33 +205,16 @@ void Window::callMouseWheel(WPARAM wParam)
 		mOnMouseWheel(this, HIWORD(wParam), LOWORD(wParam));
 }
 
-void Window::callMouseClick(WPARAM wParam, LPARAM lParam)
+void Window::callMouseClick(DWORD wParam, LPARAM lParam)
 {
-	if (wParam == MK_RBUTTON)
-		mPrevHover->showContextMenu();
+	if (wParam < WM_LBUTTONDOWN)
+		return; // Discard child Windows WM_CREATE messages
+
+	if (wParam == WM_RBUTTONDOWN)
+		mPrevHover->showContextMenu(mHwnd);
 
 	if (mOnMouseClick != nullptr)
 		mOnMouseClick(this, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam), wParam);
-}
-
-void Window::callChildMouseClick(WPARAM wParam, LPARAM lParam)
-{
-	if (LOWORD(wParam) == WM_RBUTTONDOWN)
-		mPrevHover->showContextMenu();
-
-	if (mOnMouseClick != nullptr)
-		switch (LOWORD(wParam))
-		{
-		case WM_LBUTTONDOWN:
-			mOnMouseClick(this, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam), MK_LBUTTON);
-			break;
-		case WM_MBUTTONDOWN:
-			mOnMouseClick(this, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam), MK_MBUTTON);
-			break;
-		case WM_RBUTTONDOWN:
-			mOnMouseClick(this, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam), MK_RBUTTON);
-			break;
-		}
 }
 
 void Window::callFocusChange(WPARAM wParam)
@@ -274,12 +256,13 @@ LRESULT Window::execute(UINT uMsg, WPARAM wParam, LPARAM lParam)
 		callMouseWheel(wParam);
 		break;
 	case WM_PARENTNOTIFY: /* Notify Window of child click actions */
-		callChildMouseClick(wParam, lParam);
+		callMouseClick(wParam, lParam);
 		break;
 	case WM_LBUTTONDOWN: /* Window left cursor button click */
 	case WM_RBUTTONDOWN: /* Window right cursor button click */
 	case WM_MBUTTONDOWN: /* Window middle cursor button click */
-		callMouseClick(wParam, lParam);
+	case WM_XBUTTONDOWN: /* Window extra cursor button click */
+		callMouseClick(uMsg, lParam);
 		break;
 	case WM_ACTIVATE: /* Window focus state changed */
 		callFocusChange(wParam);
@@ -288,7 +271,9 @@ LRESULT Window::execute(UINT uMsg, WPARAM wParam, LPARAM lParam)
 		callHoverChange(mControls[(HWND)wParam]);
 		break;
 	case WM_COMMAND: /* Execute specific child command */
-		if (mControls[(HWND)lParam] != nullptr)
+		if (HIWORD(wParam) == 0 && mPrevHover) // If menu Click
+			mPrevHover->mOnMenuClick(mPrevHover, LOWORD(wParam));
+		else if (mControls[(HWND)lParam] != nullptr) // Otherwise command
 			mControls[(HWND)lParam]->execute(uMsg, wParam, lParam);
 		break;
 	case WM_NCHITTEST: /* Handle possible child window dragNdrop */

@@ -1,32 +1,48 @@
 #include "MenuBuilder.h"
 
-MenuItem::MenuItem()
+MenuItem::MenuItem(int id)
 {
 	mInfo.cbSize = sizeof(MENUITEMINFO);
 	mInfo.fMask = MIIM_TYPE | MIIM_ID;
+	mInfo.wID = id;
+	setEnabled(true);
 }
 
-MenuItem::MenuItem(std::string str)
+MenuItem::MenuItem(int id, std::string str)
+	: MenuItem(id)
 {
-	mInfo.cbSize = sizeof(MENUITEMINFO);
-	mInfo.fMask = MIIM_TYPE | MIIM_ID;
 	setText(str);
 }
 
 void MenuItem::setSeparator(bool state)
 {
 	if (state)
+	{
+		mInfo.fMask |= MIIM_TYPE;
 		mInfo.fType |= MFT_SEPARATOR;
+	}
 	else
 		mInfo.fType &= ~MFT_SEPARATOR;
+
+	updateChanges();
 }
 
 void MenuItem::setEnabled(bool state)
 {
 	if (state)
-		mInfo.fType |= MFS_ENABLED;
+	{
+		mInfo.fMask |= MIIM_STATE;
+		mInfo.fState |= MFS_ENABLED;
+		mInfo.fState &= ~MFS_DISABLED;
+	}
 	else
-		mInfo.fType &= ~MFS_DISABLED;
+	{
+		mInfo.fMask |= MIIM_STATE;
+		mInfo.fState |= MFS_DISABLED;
+		mInfo.fState &= ~MFS_ENABLED;
+	}
+
+	updateChanges();
 }
 
 void MenuItem::setText(std::string str)
@@ -35,51 +51,133 @@ void MenuItem::setText(std::string str)
 	mText = str;
 	mInfo.dwTypeData = (LPSTR)mText.c_str();
 	mInfo.cch = mText.length();
+
+	updateChanges();
 }
 
 void MenuItem::setBitmap(HBITMAP bmp)
 {
-	mInfo.fMask |= MIIM_CHECKMARKS;
+	if (bmp != nullptr)
+		mInfo.fMask |= MIIM_CHECKMARKS;
+	else
+		mInfo.fMask &= ~MIIM_CHECKMARKS;
 	mInfo.hbmpChecked = bmp;
 	mInfo.hbmpUnchecked = bmp;
+
+	updateChanges();
 }
 
-void MenuItem::setSubMenu(ContextMenu* menu)
+void MenuItem::setSubMenu(ContextMenuStrip* menu)
 {
-	mInfo.fMask = MIIM_SUBMENU;
-	mInfo.hSubMenu = menu->mHMenu;
+	mSubMenu = menu;
+	if (mSubMenu != nullptr)
+	{
+		mInfo.fMask |= MIIM_SUBMENU;
+		mInfo.hSubMenu = mSubMenu->mHMenu;
+	}
+	else
+	{
+		mInfo.fMask &= ~MIIM_SUBMENU;
+		mInfo.hSubMenu = NULL;
+	}
+
+	updateChanges();
 }
 
-MenuBuilder::MenuBuilder()
+bool MenuItem::separator()
+{
+	return mInfo.fType & MFT_SEPARATOR;
+}
+
+bool MenuItem::enabled()
+{
+	return mInfo.fType & MFS_ENABLED;
+}
+
+int MenuItem::getId()
+{
+	return mInfo.wID;
+}
+
+std::string MenuItem::getText()
+{
+	return mText;
+}
+
+HBITMAP MenuItem::getBitmap()
+{
+	return mInfo.hbmpChecked;
+}
+
+ContextMenuStrip* MenuItem::getSubMenu()
+{
+	return nullptr;
+}
+
+void MenuItem::updateChanges()
+{
+	if (mParent == nullptr)
+		return;
+	SetMenuItemInfo(mParent->hmenu(), getId(), FALSE, &mInfo);
+}
+
+MenuControl::MenuControl()
 {
 }
 
-void MenuBuilder::destroy()
+MenuControl::~MenuControl()
+{
+	free();
+}
+
+void MenuControl::free()
 {
 	DestroyMenu(mHMenu);
 }
 
-void MenuBuilder::insert(int pos, MenuItem item)
+void MenuControl::add(MenuItem* item)
 {
-	InsertMenuItem(mHMenu, pos, TRUE, &item.mInfo);
+	InsertMenuItem(mHMenu, mItems.size(), TRUE, &(item->mInfo));
+	item->mParent = this;
+	mItems.push_back(item);
 }
 
-void MenuBuilder::insert(MenuItem item)
+int MenuControl::size()
 {
-	insert(mCount, item);
+	return mItems.size();
 }
 
-HMENU MenuBuilder::getHMenu()
+void MenuControl::remove(int pos)
+{
+	if (pos >= mItems.size())
+		return;
+	mItems.erase(mItems.begin() + pos);
+	RemoveMenu(mHMenu, pos, FALSE);
+}
+
+MenuItem* MenuControl::at(int pos)
+{
+	return mItems[pos];
+}
+
+MenuItem* MenuControl::byId(int id)
+{
+	for (auto&& item : mItems) if (item->getId() == id)
+		return item;
+	return nullptr;
+}
+
+HMENU MenuControl::hmenu()
 {
 	return mHMenu;
 }
 
-ControlMenu::ControlMenu()
+MenuStrip::MenuStrip()
 {
 	mHMenu = CreateMenu();
 }
 
-ContextMenu::ContextMenu()
+ContextMenuStrip::ContextMenuStrip()
 {
 	mHMenu = CreatePopupMenu();
 }

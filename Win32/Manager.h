@@ -56,3 +56,7 @@ HICON Icon(HINSTANCE hInstance, WORD id) {
 HMENU Menu(HINSTANCE hInstance, WORD id) {
 	return LoadMenu(hInstance, MAKEINTRESOURCE(id));
 }
+
+int Dialog(std::string text, std::string title) {
+	return MessageBox(NULL, text.c_str(), title.c_str(), MB_SYSTEMMODAL | MB_OK);
+}

@@ -29,6 +29,7 @@ class CheckBox;
 using f_onHover = void(*)(Control*, bool);
 using f_onClick = void(*)(Control*);
 using f_onDoubleClick = void(*)(Control*);
+using f_onMenuClick = void(*)(Control*, int);
 
 class Control
 {
@@ -42,14 +43,15 @@ public:
 	void disable();
 	void redraw();
 	void setOnHover(f_onHover);
+	void setOnMenuClick(f_onMenuClick);
 	void setVisibile(bool);
 	void setEnabled(bool);
 	void setLocation(int, int);
 	void setGlobalIcon(HICON);
-	void setContextMenu(ContextMenu*);
+	void setContextMenu(HMENU);
 	POINT getCursorPos();
 	POINT getCursorScreenPos();
-	HWND getHWnd();
+	HWND hwnd();
 	HICON getGlobalIcon();
 	int getX();
 	int getY();
@@ -79,7 +81,8 @@ protected:
 	static thread_local WNDCLASSEX mWndClass;
 	static thread_local std::unordered_map<HWND, Control*> mControls;
 	static thread_local HICON mIcon;
-	f_onHover mOnHover;
+	f_onHover mOnHover = nullptr;
+	f_onMenuClick mOnMenuClick = nullptr;
 	bool mCreated = false;
 	bool mEnabled = true;
 	std::string mType;
@@ -93,7 +96,7 @@ protected:
 	int mClientWidth, mClientHeight;
 	HWND mHwnd;
 	HMENU mId = NULL;
-	HMENU mContextMenu = NULL;
+	HMENU mContextMenu = nullptr;
 	Control* mParent = nullptr;
 	std::vector<Control*> mChildrens;
 
@@ -103,6 +106,6 @@ protected:
 	void eraseWithChilds();
 	void updateClientRect();
 	void updateWindowRect();
-	void showContextMenu();
+	void showContextMenu(HWND);
 	std::string pullWindowText();
 };
