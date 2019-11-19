@@ -3,6 +3,7 @@
 #include "Window.h"
 #ifndef _MINIMAL
 #include "TextView.h"
+#include "PictureBox.h"
 #include "EditText.h"
 #include "MultiEditText.h"
 #include "Button.h"

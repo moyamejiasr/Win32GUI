@@ -268,10 +268,10 @@ Control::Control()
 	globalClassInit();
 }
 
-Control::Control(std::string name, int width, int height)
+Control::Control(Control* parent, std::string name, int width, int height)
 {
 	globalClassInit();
-	mX = CW_USEDEFAULT;
+	mParent = parent;
 	setText(name);
 	setSize(width, height);
 }

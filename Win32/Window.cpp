@@ -5,7 +5,7 @@ Window::Window()
 }
 
 Window::Window(std::string name, int width, int height)
-	: Control(name, width, height)
+	: Control(nullptr, name, width, height)
 {
 	mStyle = WS_OVERLAPPEDWINDOW;
 	mBrush = GetSysColorBrush(COLOR_3DFACE);
@@ -14,10 +14,10 @@ Window::Window(std::string name, int width, int height)
 }
 
 Window::Window(Control* parent, std::string name, int width, int height)
+	: Control(parent, name, width, height)
 {
 	mStyle = WS_CHILD | WS_OVERLAPPEDWINDOW;
 	mBrush = GetSysColorBrush(COLOR_3DFACE);
-	mParent = parent;
 	mType = mWndClass.lpszClassName;
 	create();
 }

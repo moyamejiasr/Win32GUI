@@ -9,6 +9,7 @@ class CheckBox : public Button
 {
 public:
 	CheckBox();
+	CheckBox(Control*, std::string, RECT);
 	CheckBox(Control*, std::string, int = 0, int = 0);
 
 	void check();

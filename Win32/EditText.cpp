@@ -4,15 +4,21 @@ EditText::EditText()
 {
 }
 
-EditText::EditText(Control* parent, std::string name, int width, int height)
-	: TextControl(name, width, height)
+EditText::EditText(Control* parent, std::string name, RECT rect)
+	: Control(parent, name, rect.right, rect.bottom)
 {
-	mXMargin = 0; mYMargin = 6;
+	setLocation(rect.left, rect.top);
 	mStyle |= WS_CHILD | WS_VISIBLE;
-	mParent = parent;
 	mType = WC_EDIT;
 	create();
-	autoSize();
+}
+
+EditText::EditText(Control* parent, std::string name, int width, int height)
+	: Control(parent, name, width, height)
+{
+	mStyle |= WS_CHILD | WS_VISIBLE;
+	mType = WC_EDIT;
+	create();
 }
 
 void EditText::replaceSelection(std::string str)
@@ -121,10 +127,9 @@ Margin EditText::getMargin()
 }
 
 EditText::EditText(std::string name, int width, int height)
-	: TextControl(name, width, height)
+	: Control(nullptr, name, width, height)
 {
-	mXMargin = 0; mYMargin = 6;
-	mStyle |= WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL;
+	mStyle |= WS_CHILD | WS_VISIBLE;
 	mType = WC_EDIT;
 }
 
@@ -133,9 +138,7 @@ LRESULT EditText::execute(UINT uMsg, WPARAM wParam, LPARAM lParam)
 	switch (HIWORD(wParam))
 	{
 	case EN_CHANGE: /* Text Change, try autosize */
-		// We must pull text here for the autosize to work
 		mText = pullWindowText();
-		autoSize();
 		break;
 	case EN_MAXTEXT:
 		if (mOnCharLimit)

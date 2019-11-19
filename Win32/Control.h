@@ -16,11 +16,12 @@ processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 #include <vector>
 #include <unordered_map>
 
-#include "MenuBuilder.h"
+#include "MenuControl.h"
 
 class Control;
 class Window;
 class TextView;
+class PictureBox;
 class EditText;
 class MultiEditText;
 class Button;
@@ -30,6 +31,14 @@ using f_onHover = void(*)(Control*, bool);
 using f_onClick = void(*)(Control*);
 using f_onDoubleClick = void(*)(Control*);
 using f_onMenuClick = void(*)(Control*, int);
+
+enum Margin
+{
+	Undefined,
+	Left,
+	Center,
+	Right
+};
 
 class Control
 {
@@ -91,7 +100,7 @@ protected:
 	DWORD mExStyle = NULL;
 	HCURSOR mCursor;
 	HBRUSH mBrush = GetSysColorBrush(COLOR_3DFACE);
-	int mX, mY;
+	int mX = CW_USEDEFAULT, mY = 0;
 	int mWidth, mHeight;
 	int mClientWidth, mClientHeight;
 	HWND mHwnd;
@@ -101,7 +110,7 @@ protected:
 	std::vector<Control*> mChildrens;
 
 	Control();
-	Control(std::string, int, int);
+	Control(Control*, std::string, int, int);
 	bool globalClassInit();
 	void eraseWithChilds();
 	void updateClientRect();

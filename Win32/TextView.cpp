@@ -4,15 +4,27 @@ TextView::TextView()
 {
 }
 
-TextView::TextView(Control* parent, std::string name, int width, int height)
-	: TextControl(name, width, height)
+TextView::TextView(Control* parent, std::string name, RECT rect)
+	: Control(parent, name, rect.right, rect.bottom)
 {
-	mXMargin = 0; mYMargin = 0;
+	setLocation(rect.left, rect.top);
+	if (rect.right == 0 && rect.bottom == 0)
+		mAutoSize = true;
 	mStyle = WS_CHILD | WS_VISIBLE | SS_NOTIFY;
-	mParent = parent;
 	mType = WC_STATIC;
 	create();
-	autoSize();
+	autosize();
+}
+
+TextView::TextView(Control* parent, std::string name, int width, int height)
+	: Control(parent, name, width, height)
+{
+	if (width == 0 && height == 0)
+		mAutoSize = true;
+	mStyle = WS_CHILD | WS_VISIBLE | SS_NOTIFY;
+	mType = WC_STATIC;
+	create();
+	autosize();
 }
 
 void TextView::setOnClick(f_onClick call)
@@ -38,17 +50,25 @@ bool TextView::isEllipsisOn()
 	return hasFlag(SS_ENDELLIPSIS);
 }
 
+void TextView::setAutosize(bool state)
+{
+	mAutoSize = state;
+	autosize();
+}
+
 void TextView::setSize(int width, int height)
 {
+	setAutosize(false);
+	Control::setSize(width, height);
 	// Fix to the static resize garbage creation
-	TextControl::setSize(width, height);
 	redraw();
 }
 
 void TextView::setRect(RECT rect)
 {
+	setAutosize(false);
+	Control::setRect(rect);
 	// Fix to the static resize garbage creation
-	TextControl::setRect(rect);
 	redraw();
 }
 
@@ -66,6 +86,12 @@ void TextView::setMargin(Margin margin)
 		appendFlag(SS_RIGHT);
 }
 
+void TextView::setText(std::string txt)
+{
+	Control::setText(txt);
+	autosize();
+}
+
 Margin TextView::getMargin()
 {
 	if (hasFlag(SS_LEFT))
@@ -76,6 +102,16 @@ Margin TextView::getMargin()
 		return Margin::Right;
 
 	return Margin::Undefined;
+}
+
+void TextView::autosize()
+{
+	if (!mAutoSize)
+		return;
+	SIZE size;
+	GetTextExtentPoint32(GetDC(mHwnd), mText.c_str(), mText.size(), &size);
+	mWidth = size.cx; mHeight = size.cy;
+	setSize(mWidth, mHeight);
 }
 
 LRESULT TextView::execute(UINT uMsg, WPARAM wParam, LPARAM lParam)

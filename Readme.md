@@ -51,8 +51,8 @@ int main() {
 # Development
 - Window 95%
 - TextView 95%
-- EditText 90%
-- PictureBox 0%
+- EditText 80%
+- PictureBox 70%
 - Button 90%
 - ImageButton 0%
 - CheckBox 90%
@@ -62,5 +62,5 @@ int main() {
 - TreeView 0%
 - ComboBox 0%
 - TrackBar 0%
-- TopMenuBar 90%
-- ContextMenu 90%
+- TopMenuBar 95%
+- ContextMenu 95%

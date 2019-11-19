@@ -4,15 +4,23 @@ CheckBox::CheckBox()
 {
 }
 
-CheckBox::CheckBox(Control* parent, std::string name, int width, int height)
-	: Button(name, width, height)
+CheckBox::CheckBox(Control* parent, std::string name, RECT rect)
+	: Button(parent, name, rect.right, rect.bottom)
 {
-	mXMargin = 18; mYMargin = 0;
-	mStyle = WS_CHILD | WS_VISIBLE | BS_NOTIFY | BS_AUTOCHECKBOX;
+	setLocation(rect.left, rect.top);
 	mParent = parent;
+	mStyle = WS_CHILD | WS_VISIBLE | BS_NOTIFY | BS_AUTOCHECKBOX;
 	mType = WC_BUTTON;
 	create();
-	autoSize();
+}
+
+CheckBox::CheckBox(Control* parent, std::string name, int width, int height)
+	: Button(parent, name, width, height)
+{
+	mParent = parent;
+	mStyle = WS_CHILD | WS_VISIBLE | BS_NOTIFY | BS_AUTOCHECKBOX;
+	mType = WC_BUTTON;
+	create();
 }
 
 void CheckBox::check()

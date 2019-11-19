@@ -3,21 +3,18 @@
 
 #include "Control.h"
 
-class Button : public Control
+class PictureBox : public Control
 {
 public:
-	Button();
-	Button(Control*, std::string, RECT);
-	Button(Control*, std::string, int = 0, int = 0);
+	PictureBox();
+	PictureBox(Control*, std::string, RECT);
+	PictureBox(Control*, std::string, int = 0, int = 0);
 
 	void setOnClick(f_onClick);
 	void setOnDoubleClick(f_onDoubleClick);
-	void setMargin(Margin);
-	Margin getMargin();
 protected:
 	f_onClick mOnClick;
 	f_onDoubleClick mOnDoubleClick;
 
-	Button(std::string, int = 0, int = 0);
 	virtual LRESULT execute(UINT, WPARAM, LPARAM);
 };

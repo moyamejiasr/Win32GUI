@@ -1,9 +1,9 @@
 #pragma once
 #pragma warning (disable : 26495)
 
-#include "TextControl.h"
+#include "Control.h"
 
-using f_onCharLimit = void(*)(EditText*);
+using f_onCharLimit = void(*)(Control*);
 
 enum TextCase {
 	Normal,
@@ -11,10 +11,11 @@ enum TextCase {
 	LowerCase
 };
 
-class EditText : public TextControl
+class EditText : public Control
 {
 public:
 	EditText();
+	EditText(Control*, std::string, RECT);
 	EditText(Control*, std::string, int = 0, int = 0);
 
 	void replaceSelection(std::string);
@@ -26,8 +27,8 @@ public:
 	void setPassword(bool);
 	void setTextCase(TextCase);
 	std::string getSelection();
-	virtual void setMargin(Margin);
-	virtual Margin getMargin();
+	void setMargin(Margin);
+	Margin getMargin();
 protected:
 	EditText(std::string, int = 0, int = 0);
 	f_onCharLimit mOnCharLimit = nullptr;

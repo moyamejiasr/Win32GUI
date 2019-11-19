@@ -4,15 +4,21 @@ Button::Button()
 {
 }
 
-Button::Button(Control* parent, std::string name, int width, int height)
-	: TextControl(name, width, height)
+Button::Button(Control* parent, std::string name, RECT rect)
+	: Control(parent, name, rect.right, rect.bottom)
 {
-	mXMargin = 18; mYMargin = 12;
+	setLocation(rect.left, rect.top);
 	mStyle = WS_CHILD | WS_VISIBLE | BS_NOTIFY;
-	mParent = parent;
 	mType = WC_BUTTON;
 	create();
-	autoSize();
+}
+
+Button::Button(Control* parent, std::string name, int width, int height)
+	: Control(parent, name, width, height)
+{
+	mStyle = WS_CHILD | WS_VISIBLE | BS_NOTIFY;
+	mType = WC_BUTTON;
+	create();
 }
 
 void Button::setOnClick(f_onClick call)
@@ -52,7 +58,7 @@ Margin Button::getMargin()
 }
 
 Button::Button(std::string name, int width, int height)
-	: TextControl(name, width, height)
+	: Control(nullptr, name, width, height)
 {
 }
 
