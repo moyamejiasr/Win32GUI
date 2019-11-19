@@ -271,7 +271,7 @@ LRESULT Window::execute(UINT uMsg, WPARAM wParam, LPARAM lParam)
 		callHoverChange(mControls[(HWND)wParam]);
 		break;
 	case WM_COMMAND: /* Execute specific child command */
-		if (HIWORD(wParam) == 0 && mPrevHover) // If menu Click
+		if (HIWORD(wParam) == 0 && mPrevHover && mPrevHover->mOnMenuClick) // If menu Click
 			mPrevHover->mOnMenuClick(mPrevHover, LOWORD(wParam));
 		else if (mControls[(HWND)lParam] != nullptr) // Otherwise command
 			mControls[(HWND)lParam]->execute(uMsg, wParam, lParam);

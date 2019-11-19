@@ -15,11 +15,11 @@ public:
 	void setEllipsis(bool);
 	bool isEllipsisOn();
 	void setAutosize(bool);
-	void setMargin(Margin);
+	void setAlign(Align);
 	virtual void setText(std::string);
 	virtual void setSize(int, int);
 	virtual void setRect(RECT);
-	Margin getMargin();
+	Align getAlign();
 protected:
 	f_onClick mOnClick;
 	f_onDoubleClick mOnDoubleClick;

@@ -100,30 +100,30 @@ std::string EditText::getSelection()
 	return mText.substr(start, end - start);
 }
 
-void EditText::setMargin(Margin margin)
+void EditText::setAlign(Align margin)
 {
 	removeFlag(ES_LEFT);
 	removeFlag(ES_CENTER);
 	removeFlag(ES_RIGHT);
 
-	if (margin == Margin::Left)
+	if (margin == Align::Left)
 		appendFlag(ES_LEFT);
-	if (margin == Margin::Center)
+	if (margin == Align::Center)
 		appendFlag(ES_CENTER);
-	if (margin == Margin::Right)
+	if (margin == Align::Right)
 		appendFlag(ES_RIGHT);
 }
 
-Margin EditText::getMargin()
+Align EditText::getAlign()
 {
 	if (hasFlag(ES_LEFT))
-		return Margin::Left;
+		return Align::Left;
 	if (hasFlag(ES_CENTER))
-		return Margin::Center;
+		return Align::Center;
 	if (hasFlag(ES_RIGHT))
-		return Margin::Right;
+		return Align::Right;
 
-	return Margin::Undefined;
+	return Align::Undefined;
 }
 
 EditText::EditText(std::string name, int width, int height)

@@ -12,8 +12,8 @@ public:
 
 	void setOnClick(f_onClick);
 	void setOnDoubleClick(f_onDoubleClick);
-	void setMargin(Margin);
-	Margin getMargin();
+	void setAlign(Align);
+	Align getAlign();
 protected:
 	f_onClick mOnClick;
 	f_onDoubleClick mOnDoubleClick;

@@ -27,8 +27,8 @@ public:
 	void setPassword(bool);
 	void setTextCase(TextCase);
 	std::string getSelection();
-	void setMargin(Margin);
-	Margin getMargin();
+	void setAlign(Align);
+	Align getAlign();
 protected:
 	EditText(std::string, int = 0, int = 0);
 	f_onCharLimit mOnCharLimit = nullptr;

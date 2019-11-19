@@ -32,7 +32,7 @@ using f_onClick = void(*)(Control*);
 using f_onDoubleClick = void(*)(Control*);
 using f_onMenuClick = void(*)(Control*, int);
 
-enum Margin
+enum Align
 {
 	Undefined,
 	Left,

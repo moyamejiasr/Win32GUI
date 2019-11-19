@@ -10,7 +10,7 @@ In here every Thread of the program has associated a local WNDCLASS from which d
 
 # Examples
 ## Single Window example
-Here we create a Windows From of 800x600 and assign a textview to it.
+Here we create a WindowsForm of 800x600 and assign a textview to it.
 Text controls will change size automatically if not specified previously.
 ```c++
 #include "Win32/Manager.h"
@@ -52,7 +52,7 @@ int main() {
 - Window 95%
 - TextView 95%
 - EditText 80%
-- PictureBox 70%
+- PictureBox 95%
 - Button 90%
 - ImageButton 0%
 - CheckBox 90%

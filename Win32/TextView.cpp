@@ -72,17 +72,17 @@ void TextView::setRect(RECT rect)
 	redraw();
 }
 
-void TextView::setMargin(Margin margin)
+void TextView::setAlign(Align margin)
 {
 	removeFlag(SS_LEFT);
 	removeFlag(SS_CENTER);
 	removeFlag(SS_RIGHT);
 
-	if (margin == Margin::Left)
+	if (margin == Align::Left)
 		appendFlag(SS_LEFT);
-	if (margin == Margin::Center)
+	if (margin == Align::Center)
 		appendFlag(SS_CENTER);
-	if (margin == Margin::Right)
+	if (margin == Align::Right)
 		appendFlag(SS_RIGHT);
 }
 
@@ -92,16 +92,16 @@ void TextView::setText(std::string txt)
 	autosize();
 }
 
-Margin TextView::getMargin()
+Align TextView::getAlign()
 {
 	if (hasFlag(SS_LEFT))
-		return Margin::Left;
+		return Align::Left;
 	if (hasFlag(SS_CENTER))
-		return Margin::Center;
+		return Align::Center;
 	if (hasFlag(SS_RIGHT))
-		return Margin::Right;
+		return Align::Right;
 
-	return Margin::Undefined;
+	return Align::Undefined;
 }
 
 void TextView::autosize()

@@ -31,30 +31,30 @@ void Button::setOnDoubleClick(f_onDoubleClick call)
 	mOnDoubleClick = call;
 }
 
-void Button::setMargin(Margin margin)
+void Button::setAlign(Align margin)
 {
 	removeFlag(BS_LEFT);
 	removeFlag(BS_CENTER);
 	removeFlag(BS_RIGHT);
 
-	if (margin == Margin::Left)
+	if (margin == Align::Left)
 		appendFlag(BS_LEFT);
-	if (margin == Margin::Center)
+	if (margin == Align::Center)
 		appendFlag(BS_CENTER);
-	if (margin == Margin::Right)
+	if (margin == Align::Right)
 		appendFlag(BS_RIGHT);
 }
 
-Margin Button::getMargin()
+Align Button::getAlign()
 {
 	if (hasFlag(BS_LEFT))
-		return Margin::Left;
+		return Align::Left;
 	if (hasFlag(BS_CENTER))
-		return Margin::Center;
+		return Align::Center;
 	if (hasFlag(BS_RIGHT))
-		return Margin::Right;
+		return Align::Right;
 
-	return Margin::Undefined;
+	return Align::Undefined;
 }
 
 Button::Button(std::string name, int width, int height)
