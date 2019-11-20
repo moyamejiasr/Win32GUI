@@ -27,4 +27,5 @@ protected:
 
 	void autosize();
 	virtual LRESULT execute(UINT, WPARAM, LPARAM);
+	virtual LRESULT drawctl(UINT, WPARAM, LPARAM);
 };

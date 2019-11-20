@@ -9,6 +9,11 @@
 #include "Button.h"
 #include "CheckBox.h"
 #endif
+#ifdef _OGL
+#include "OGLFrame.h"
+#endif
+
+#define Invisible (HBRUSH)GetStockObject(HOLLOW_BRUSH)
 
 // Get COLORREF from r, g, b values
 // Example: 255, 255, 255
@@ -31,6 +36,12 @@ COLORREF Hex(std::string hex)
 	if (hex[0] == '#')
 		hex = hex.erase(0, 1);
 	return Hex(std::stoul(hex, nullptr, 16));
+}
+
+// Get Solid Brush from Color
+HBRUSH Brush(COLORREF ref)
+{
+	return CreateSolidBrush(ref);
 }
 
 // Load Bitmap from file

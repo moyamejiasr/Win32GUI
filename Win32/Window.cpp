@@ -8,7 +8,6 @@ Window::Window(std::string name, int width, int height)
 	: Control(nullptr, name, width, height)
 {
 	mStyle = WS_OVERLAPPEDWINDOW;
-	mBrush = GetSysColorBrush(COLOR_3DFACE);
 	mType = mWndClass.lpszClassName;
 	create();
 }
@@ -17,7 +16,6 @@ Window::Window(Control* parent, std::string name, int width, int height)
 	: Control(parent, name, width, height)
 {
 	mStyle = WS_CHILD | WS_OVERLAPPEDWINDOW;
-	mBrush = GetSysColorBrush(COLOR_3DFACE);
 	mType = mWndClass.lpszClassName;
 	create();
 }
@@ -241,7 +239,7 @@ LRESULT Window::execute(UINT uMsg, WPARAM wParam, LPARAM lParam)
 	switch (uMsg)
 	{
 	case WM_CONTEXTMENU:
-		if (mControls[(HWND)wParam] != nullptr)
+		if (ctlExists(wParam))
 		{
 			mControls[(HWND)wParam]->showContextMenu(mHwnd);
 			mPrevHover = mControls[(HWND)wParam]; // Set menu caller
@@ -278,8 +276,14 @@ LRESULT Window::execute(UINT uMsg, WPARAM wParam, LPARAM lParam)
 		if (HIWORD(wParam) == 0 && lParam == 0) // If Menu Click
 			if (mPrevHover && mPrevHover->mOnMenuClick) // Check if callback present
 				mPrevHover->mOnMenuClick(mPrevHover, LOWORD(wParam));
-		else if (mControls[(HWND)lParam] != nullptr) // Otherwise command
+		else if (ctlExists(lParam)) // Otherwise command
 			mControls[(HWND)lParam]->execute(uMsg, wParam, lParam);
+		break;
+	case WM_CTLCOLORSTATIC:
+	case WM_CTLCOLOREDIT:
+	case WM_CTLCOLORBTN:
+		if (ctlExists(lParam))
+			return mControls[(HWND)lParam]->drawctl(uMsg, wParam, lParam);
 		break;
 	case WM_NCHITTEST: /* Handle possible child window dragNdrop */
 		if (mDraggable)

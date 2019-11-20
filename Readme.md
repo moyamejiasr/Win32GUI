@@ -50,12 +50,13 @@ int main() {
 
 # Development
 - Window 95%
-- TextView 95%
-- EditText 95%
-- PictureBox 95%
-- Button 95%
+- General Control struct 70%
+- TextView 100%
+- EditText 100%
+- PictureBox 100%
+- Button 100%
 - ImageButton 0%
-- CheckBox 95%
+- CheckBox 90%
 - GroupBox 0%
 - ProgressBar 0%
 - ListBox 0%
@@ -64,9 +65,10 @@ int main() {
 - TrackBar 0%
 - TopMenuBar 100%
 - ContextMenu 100%
+- OGLFrame 70%
 
 # To-Do
 - Add controls constructor without creation
 - Add getters & change names
-- Add text color change
-- Add mouse click att enums
+- Add mouse click att enums for window call
+- Add child mouse & key detections

@@ -153,8 +153,14 @@ void Control::setStrikeout(bool state)
 
 void Control::setFont(std::string str)
 {
+	int nLen = 32 > str.size() ? 31 : str.size();
 	std::copy(str.begin(), str.end(), mLogFont.lfFaceName);
-	mLogFont.lfFaceName[str.size()] = '\0';
+	mLogFont.lfFaceName[nLen] = '\0';
+}
+
+void Control::setBackground(HBRUSH brush)
+{
+	mBkBrush = brush;
 }
 
 POINT Control::getCursorPos()
@@ -301,6 +307,7 @@ Control::Control()
 Control::Control(Control* parent, std::string name, int width, int height)
 {
 	globalClassInit();
+	mBkBrush = mWndClass.hbrBackground;
 	mParent = parent;
 	setText(name);
 	setSize(width, height);
@@ -368,7 +375,7 @@ bool Control::globalClassInit()
 	mWndClass.hInstance = GetModuleHandle(NULL);
 	mWndClass.lpszClassName = mClassName.c_str();
 	mWndClass.hIcon = mIcon;
-	mWndClass.hbrBackground = mBrush;
+	mWndClass.hbrBackground = GetSysColorBrush(COLOR_3DFACE);
 	mWndClass.hCursor = LoadCursor(0, IDC_ARROW);
 	if (!RegisterClassEx(&mWndClass))
 	{
@@ -388,6 +395,11 @@ void Control::eraseWithChilds()
 	for (auto const& child : mChildrens)
 		mControls.erase(child->mHwnd);
 	mControls.erase(mHwnd);
+}
+
+bool Control::ctlExists(DWORD param)
+{
+	return mControls.find((HWND)param) != mControls.end();
 }
 
 void Control::updateClientRect()
@@ -445,10 +457,12 @@ std::string Control::pullWindowText()
 
 LRESULT Control::execute(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-#ifdef _DEBUG
-	std::cout << "undefined execute for " << lParam << std::endl;
-#endif
-	return false;
+	return DefWindowProc(mHwnd, uMsg, wParam, lParam);
+}
+
+LRESULT Control::drawctl(UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	return (LRESULT)DefWindowProc(mHwnd, uMsg, wParam, lParam);
 }
 
 LRESULT CALLBACK Control::WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -456,7 +470,7 @@ LRESULT CALLBACK Control::WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lP
 #ifdef _DEBUG_MSG
 	std::cout << uMsg << std::endl;
 #endif
-	if (mControls[hwnd] != nullptr)
+	if (mControls.find(hwnd) != mControls.end())
 		return mControls[hwnd]->execute(uMsg, wParam, lParam);
 	return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }

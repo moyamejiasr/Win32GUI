@@ -8,6 +8,7 @@ EditText::EditText(Control* parent, std::string name, RECT rect)
 	: Control(parent, name, rect.right, rect.bottom)
 {
 	setLocation(rect.left, rect.top);
+	mBkBrush = (HBRUSH)GetStockObject(WHITE_BRUSH);
 	mStyle |= WS_CHILD | WS_VISIBLE;
 	mType = WC_EDIT;
 	create();
@@ -16,6 +17,7 @@ EditText::EditText(Control* parent, std::string name, RECT rect)
 EditText::EditText(Control* parent, std::string name, int width, int height)
 	: Control(parent, name, width, height)
 {
+	mBkBrush = (HBRUSH)GetStockObject(WHITE_BRUSH);
 	mStyle |= WS_CHILD | WS_VISIBLE;
 	mType = WC_EDIT;
 	create();
@@ -146,4 +148,11 @@ LRESULT EditText::execute(UINT uMsg, WPARAM wParam, LPARAM lParam)
 		break;
 	}
 	return true;
+}
+
+LRESULT EditText::drawctl(UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	SetBkMode((HDC)wParam, TRANSPARENT);
+	SetTextColor((HDC)wParam, RGB(255, 0, 0));
+	return (LRESULT)mBkBrush;
 }

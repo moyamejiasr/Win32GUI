@@ -26,6 +26,7 @@ class EditText;
 class MultiEditText;
 class Button;
 class CheckBox;
+class OGLFrame;
 
 using f_onHover = void(*)(Control*, bool);
 using f_onClick = void(*)(Control*);
@@ -63,6 +64,7 @@ public:
 	void setUnderline(bool);
 	void setStrikeout(bool);
 	void setFont(std::string);
+	void setBackground(HBRUSH);
 	POINT getCursorPos();
 	POINT getCursorScreenPos();
 	HWND hwnd();
@@ -90,6 +92,7 @@ public:
 protected:
 	friend class Window;
 	virtual LRESULT execute(UINT, WPARAM, LPARAM);
+	virtual LRESULT drawctl(UINT, WPARAM, LPARAM);
 	static LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 	static thread_local std::string mClassName;
 	static thread_local WNDCLASSEX mWndClass;
@@ -104,7 +107,8 @@ protected:
 	DWORD mStyle = NULL;
 	DWORD mExStyle = NULL;
 	HCURSOR mCursor;
-	HBRUSH mBrush = GetSysColorBrush(COLOR_3DFACE);
+	COLORREF mFtColor;
+	HBRUSH mBkBrush;
 	int mX = CW_USEDEFAULT, mY = 0;
 	int mWidth, mHeight;
 	int mClientWidth, mClientHeight;
@@ -120,6 +124,7 @@ protected:
 	Control(Control*, std::string, int, int);
 	bool globalClassInit();
 	void eraseWithChilds();
+	bool ctlExists(DWORD);
 	void updateClientRect();
 	void updateWindowRect();
 	void updateFont();

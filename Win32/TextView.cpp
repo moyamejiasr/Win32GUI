@@ -129,3 +129,10 @@ LRESULT TextView::execute(UINT uMsg, WPARAM wParam, LPARAM lParam)
 	}
 	return true;
 }
+
+LRESULT TextView::drawctl(UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	SetBkMode((HDC)wParam, TRANSPARENT);
+	SetTextColor((HDC)wParam, RGB(255, 0, 0));
+	return (LRESULT)mBkBrush;
+}
