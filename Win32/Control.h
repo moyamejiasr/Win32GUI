@@ -58,6 +58,11 @@ public:
 	void setLocation(int, int);
 	void setGlobalIcon(HICON);
 	void setContextMenu(HMENU);
+	void setTextSize(int);
+	void setItalic(bool);
+	void setUnderline(bool);
+	void setStrikeout(bool);
+	void setFont(std::string);
 	POINT getCursorPos();
 	POINT getCursorScreenPos();
 	HWND hwnd();
@@ -104,6 +109,8 @@ protected:
 	int mWidth, mHeight;
 	int mClientWidth, mClientHeight;
 	HWND mHwnd;
+	LOGFONT mLogFont;
+	HFONT mFont = nullptr;
 	HMENU mId = NULL;
 	HMENU mContextMenu = nullptr;
 	Control* mParent = nullptr;
@@ -115,6 +122,7 @@ protected:
 	void eraseWithChilds();
 	void updateClientRect();
 	void updateWindowRect();
+	void updateFont();
 	void showContextMenu(HWND);
 	std::string pullWindowText();
 };

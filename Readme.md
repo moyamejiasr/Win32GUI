@@ -51,16 +51,22 @@ int main() {
 # Development
 - Window 95%
 - TextView 95%
-- EditText 80%
+- EditText 95%
 - PictureBox 95%
-- Button 90%
+- Button 95%
 - ImageButton 0%
-- CheckBox 90%
+- CheckBox 95%
 - GroupBox 0%
 - ProgressBar 0%
 - ListBox 0%
 - TreeView 0%
 - ComboBox 0%
 - TrackBar 0%
-- TopMenuBar 95%
-- ContextMenu 95%
+- TopMenuBar 100%
+- ContextMenu 100%
+
+# To-Do
+- Add controls constructor without creation
+- Add getters & change names
+- Add text color change
+- Add mouse click att enums

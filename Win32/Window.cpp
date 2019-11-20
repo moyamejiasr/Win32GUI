@@ -210,10 +210,7 @@ void Window::callMouseClick(DWORD wParam, LPARAM lParam)
 	if (wParam < WM_LBUTTONDOWN)
 		return; // Discard child Windows WM_CREATE messages
 
-	if (wParam == WM_RBUTTONDOWN)
-		mPrevHover->showContextMenu(mHwnd);
-
-	if (mOnMouseClick != nullptr)
+	if (mOnMouseClick != nullptr) // TODO CHECK wParam types
 		mOnMouseClick(this, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam), wParam);
 }
 
@@ -243,6 +240,13 @@ LRESULT Window::execute(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	switch (uMsg)
 	{
+	case WM_CONTEXTMENU:
+		if (mControls[(HWND)wParam] != nullptr)
+		{
+			mControls[(HWND)wParam]->showContextMenu(mHwnd);
+			mPrevHover = mControls[(HWND)wParam]; // Set menu caller
+		}
+		break;
 	case WM_GETMINMAXINFO: /* Window Size Limits */
 		setMinMaxInfo(lParam);
 		break;
@@ -271,8 +275,9 @@ LRESULT Window::execute(UINT uMsg, WPARAM wParam, LPARAM lParam)
 		callHoverChange(mControls[(HWND)wParam]);
 		break;
 	case WM_COMMAND: /* Execute specific child command */
-		if (HIWORD(wParam) == 0 && mPrevHover && mPrevHover->mOnMenuClick) // If menu Click
-			mPrevHover->mOnMenuClick(mPrevHover, LOWORD(wParam));
+		if (HIWORD(wParam) == 0 && lParam == 0) // If Menu Click
+			if (mPrevHover && mPrevHover->mOnMenuClick) // Check if callback present
+				mPrevHover->mOnMenuClick(mPrevHover, LOWORD(wParam));
 		else if (mControls[(HWND)lParam] != nullptr) // Otherwise command
 			mControls[(HWND)lParam]->execute(uMsg, wParam, lParam);
 		break;

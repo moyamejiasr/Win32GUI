@@ -144,8 +144,6 @@ LRESULT EditText::execute(UINT uMsg, WPARAM wParam, LPARAM lParam)
 		if (mOnCharLimit)
 			mOnCharLimit(this);
 		break;
-	case EM_SETSEL:
-		std::cout << "xd" << std::endl;
 	}
 	return true;
 }

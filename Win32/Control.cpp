@@ -127,6 +127,36 @@ void Control::setContextMenu(HMENU ctl)
 	mContextMenu = ctl;
 }
 
+void Control::setTextSize(int size)
+{
+	mLogFont.lfHeight = size;
+	updateFont();
+}
+
+void Control::setItalic(bool state)
+{
+	mLogFont.lfItalic = state;
+	updateFont();
+}
+
+void Control::setUnderline(bool state)
+{
+	mLogFont.lfUnderline = state;
+	updateFont();
+}
+
+void Control::setStrikeout(bool state)
+{
+	mLogFont.lfStrikeOut = state;
+	updateFont();
+}
+
+void Control::setFont(std::string str)
+{
+	std::copy(str.begin(), str.end(), mLogFont.lfFaceName);
+	mLogFont.lfFaceName[str.size()] = '\0';
+}
+
 POINT Control::getCursorPos()
 {
 	POINT p;
@@ -296,6 +326,7 @@ bool Control::create()
 	{
 		mCreated = true;
 		mControls[mHwnd] = this;
+		updateFont();
 		updateClientRect();
 		if (mParent != nullptr)
 		{
@@ -322,31 +353,32 @@ void Control::destroy()
 
 bool Control::globalClassInit()
 {
-	if (!mWndClass.hInstance)
+	NONCLIENTMETRICS metrics{};
+	metrics.cbSize = sizeof(NONCLIENTMETRICS);
+	SystemParametersInfo(SPI_GETNONCLIENTMETRICS, metrics.cbSize, &metrics, 0);
+	mLogFont = metrics.lfMessageFont;
+
+	if (mWndClass.hInstance)
+		return true;
+	// Create unique class name
+	mClassName = std::to_string(GetCurrentThreadId());
+	// Set class data
+	mWndClass.cbSize = sizeof(mWndClass);
+	mWndClass.lpfnWndProc = WndProc;
+	mWndClass.hInstance = GetModuleHandle(NULL);
+	mWndClass.lpszClassName = mClassName.c_str();
+	mWndClass.hIcon = mIcon;
+	mWndClass.hbrBackground = mBrush;
+	mWndClass.hCursor = LoadCursor(0, IDC_ARROW);
+	if (!RegisterClassEx(&mWndClass))
 	{
-		// Create unique class name
-		mClassName = std::to_string(GetCurrentThreadId());
-		// Set class data
-		mWndClass.cbSize = sizeof(mWndClass);
-		mWndClass.lpfnWndProc = WndProc;
-		mWndClass.hInstance = GetModuleHandle(NULL);
-		mWndClass.lpszClassName = mClassName.c_str();
-		mWndClass.hIcon = mIcon;
-		mWndClass.hbrBackground = mBrush;
-		mWndClass.hCursor = LoadCursor(0, IDC_ARROW);
-		if (!RegisterClassEx(&mWndClass))
-		{
 #ifdef _DEBUG
-			std::cout << "[*] Unable to register WndClass" << std::endl;
+		std::cout << "[*] Unable to register WndClass" << std::endl;
 #endif
-			return false;
-		}
-#ifdef _DEBUG
-		std::cout << "[*] WndClass registered successfully" << std::endl;
-#endif
+		exit(-1);
 	}
 #ifdef _DEBUG
-	else std::cout << "[*] WndClass already registered" << std::endl;
+	std::cout << "[*] WndClass registered successfully" << std::endl;
 #endif
 	return true;
 }
@@ -377,6 +409,18 @@ void Control::updateWindowRect()
 		mY = rect.top;
 		mWidth = rect.right - rect.left;
 		mHeight = rect.bottom - rect.top;
+	}
+}
+
+void Control::updateFont()
+{
+	if (mFont != nullptr)
+		DeleteObject(mFont);
+	mFont = CreateFontIndirect(&mLogFont);
+
+	if (mCreated) {
+		SendMessage(mHwnd, WM_SETFONT, (WPARAM)mFont, TRUE);
+		redraw();
 	}
 }
 
