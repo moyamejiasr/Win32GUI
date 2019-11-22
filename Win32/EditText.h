@@ -4,9 +4,10 @@
 #include "Control.h"
 
 using f_onCharLimit = void(*)(Control*);
+using f_onTextChanged = void(*)(Control*, std::string);
 
 enum TextCase {
-	Normal,
+	ProgressNormal,
 	UpperCase,
 	LowerCase
 };
@@ -20,6 +21,7 @@ public:
 
 	void replaceSelection(std::string);
 	void setOnCharLimit(f_onCharLimit);
+	void setOnTextChanged(f_onTextChanged);
 	void setCharLimit(int);
 	void setSelection(int, int);
 	void setNumbersOnly(bool);
@@ -32,6 +34,7 @@ public:
 protected:
 	EditText(std::string, int = 0, int = 0);
 	f_onCharLimit mOnCharLimit = nullptr;
+	f_onTextChanged mOnTextChanged = nullptr;
 	int mCharLimit = 0;
 
 	virtual LRESULT execute(UINT, WPARAM, LPARAM);

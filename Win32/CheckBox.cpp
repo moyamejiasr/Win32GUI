@@ -54,5 +54,5 @@ LRESULT CheckBox::execute(UINT uMsg, WPARAM wParam, LPARAM lParam)
 		if (mOnCheckChange != nullptr)
 			mOnCheckChange(this, mChecked);
 	}
-	return true;
+	return DefWindowProc(mHwnd, uMsg, wParam, lParam);
 }

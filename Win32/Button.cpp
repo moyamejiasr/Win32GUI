@@ -75,5 +75,5 @@ LRESULT Button::execute(UINT uMsg, WPARAM wParam, LPARAM lParam)
 			mOnDoubleClick(this);
 		break;
 	}
-	return true;
+	return DefWindowProc(mHwnd, uMsg, wParam, lParam);
 }

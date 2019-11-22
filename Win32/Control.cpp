@@ -163,6 +163,17 @@ void Control::setBackground(HBRUSH brush)
 	mBkBrush = brush;
 }
 
+void Control::setOldStyle(bool state)
+{
+	mOldStyle = state;
+	if (!mCreated)
+		return;
+	if (mOldStyle)
+		SetWindowTheme(mHwnd, L" ", L" ");
+	else
+		SetWindowTheme(mHwnd, L"Explorer", NULL);
+}
+
 POINT Control::getCursorPos()
 {
 	POINT p;
@@ -388,6 +399,14 @@ bool Control::globalClassInit()
 	std::cout << "[*] WndClass registered successfully" << std::endl;
 #endif
 	return true;
+}
+
+bool Control::cmnControlInit(DWORD flag)
+{
+	INITCOMMONCONTROLSEX icex{};
+	icex.dwSize = sizeof(INITCOMMONCONTROLSEX);
+	icex.dwICC = flag;
+	return InitCommonControlsEx(&icex);
 }
 
 void Control::eraseWithChilds()

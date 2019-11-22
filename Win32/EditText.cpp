@@ -34,6 +34,11 @@ void EditText::setOnCharLimit(f_onCharLimit call)
 	mOnCharLimit = call;
 }
 
+void EditText::setOnTextChanged(f_onTextChanged call)
+{
+	mOnTextChanged = call;
+}
+
 void EditText::setCharLimit(int val)
 {
 	mCharLimit = val;
@@ -141,13 +146,15 @@ LRESULT EditText::execute(UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
 	case EN_CHANGE: /* Text Change, try autosize */
 		mText = pullWindowText();
+		if (mOnTextChanged)
+			mOnTextChanged(this, mText);
 		break;
 	case EN_MAXTEXT:
 		if (mOnCharLimit)
 			mOnCharLimit(this);
 		break;
 	}
-	return true;
+	return DefWindowProc(mHwnd, uMsg, wParam, lParam);
 }
 
 LRESULT EditText::drawctl(UINT uMsg, WPARAM wParam, LPARAM lParam)

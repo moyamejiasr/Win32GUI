@@ -26,6 +26,8 @@ class EditText;
 class MultiEditText;
 class Button;
 class CheckBox;
+class TrackBar;
+class ProgressBar;
 class OGLFrame;
 
 using f_onHover = void(*)(Control*, bool);
@@ -39,6 +41,12 @@ enum Align
 	Left,
 	Center,
 	Right
+};
+
+enum Orientation
+{
+	Vertical,
+	Horizontal
 };
 
 class Control
@@ -65,6 +73,7 @@ public:
 	void setStrikeout(bool);
 	void setFont(std::string);
 	void setBackground(HBRUSH);
+	void setOldStyle(bool);
 	POINT getCursorPos();
 	POINT getCursorScreenPos();
 	HWND hwnd();
@@ -102,6 +111,7 @@ protected:
 	f_onMenuClick mOnMenuClick = nullptr;
 	bool mCreated = false;
 	bool mEnabled = true;
+	bool mOldStyle = false;
 	std::string mType;
 	std::string mText;
 	DWORD mStyle = NULL;
@@ -123,6 +133,7 @@ protected:
 	Control();
 	Control(Control*, std::string, int, int);
 	bool globalClassInit();
+	bool cmnControlInit(DWORD);
 	void eraseWithChilds();
 	bool ctlExists(DWORD);
 	void updateClientRect();

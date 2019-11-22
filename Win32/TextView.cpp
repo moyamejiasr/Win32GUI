@@ -127,7 +127,7 @@ LRESULT TextView::execute(UINT uMsg, WPARAM wParam, LPARAM lParam)
 			mOnDoubleClick(this);
 		break;
 	}
-	return true;
+	return DefWindowProc(mHwnd, uMsg, wParam, lParam);
 }
 
 LRESULT TextView::drawctl(UINT uMsg, WPARAM wParam, LPARAM lParam)

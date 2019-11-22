@@ -277,7 +277,12 @@ LRESULT Window::execute(UINT uMsg, WPARAM wParam, LPARAM lParam)
 			if (mPrevHover && mPrevHover->mOnMenuClick) // Check if callback present
 				mPrevHover->mOnMenuClick(mPrevHover, LOWORD(wParam));
 		else if (ctlExists(lParam)) // Otherwise command
-			mControls[(HWND)lParam]->execute(uMsg, wParam, lParam);
+			return mControls[(HWND)lParam]->execute(uMsg, wParam, lParam);
+		break;
+	case WM_VSCROLL: /* On TrackBar Scroll set */
+	case WM_HSCROLL: /* On TrackBar Scroll set */
+		if (ctlExists(lParam))
+			return mControls[(HWND)lParam]->execute(uMsg, wParam, lParam);
 		break;
 	case WM_CTLCOLORSTATIC:
 	case WM_CTLCOLOREDIT:
