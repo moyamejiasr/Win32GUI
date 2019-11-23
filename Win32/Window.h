@@ -6,7 +6,6 @@
 using f_onClose = bool(*)(Window*);
 using f_onResize = void(*)(Window*, int, int);
 using f_onMove = void(*)(Window*, int, int);
-using f_onFocus = void(*)(Window*, bool);
 using f_onMouseWheel = void(*)(Window*, int, int);
 using f_onMouseClick = void(*)(Window*, int, int, int);
 

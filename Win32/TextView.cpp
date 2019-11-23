@@ -7,6 +7,7 @@ TextView::TextView()
 TextView::TextView(Control* parent, std::string name, RECT rect)
 	: Control(parent, name, rect.right, rect.bottom)
 {
+	cmnControlInit(ICC_STANDARD_CLASSES);
 	setLocation(rect.left, rect.top);
 	if (rect.right == 0 && rect.bottom == 0)
 		mAutoSize = true;
@@ -19,6 +20,7 @@ TextView::TextView(Control* parent, std::string name, RECT rect)
 TextView::TextView(Control* parent, std::string name, int width, int height)
 	: Control(parent, name, width, height)
 {
+	cmnControlInit(ICC_STANDARD_CLASSES);
 	if (width == 0 && height == 0)
 		mAutoSize = true;
 	mStyle = WS_CHILD | WS_VISIBLE | SS_NOTIFY;

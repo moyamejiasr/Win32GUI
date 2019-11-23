@@ -270,12 +270,17 @@ LRESULT Window::execute(UINT uMsg, WPARAM wParam, LPARAM lParam)
 		callFocusChange(wParam);
 		break;
 	case WM_SETCURSOR: /* Window's control hover change detect by cursor */
-		callHoverChange(mControls[(HWND)wParam]);
+		if (ctlExists(wParam))
+			callHoverChange(mControls[(HWND)wParam]);
 		break;
 	case WM_COMMAND: /* Execute specific child command */
 		if (HIWORD(wParam) == 0 && lParam == 0) // If Menu Click
+		{
 			if (mPrevHover && mPrevHover->mOnMenuClick) // Check if callback present
+			{
 				mPrevHover->mOnMenuClick(mPrevHover, LOWORD(wParam));
+			}
+		}
 		else if (ctlExists(lParam)) // Otherwise command
 			return mControls[(HWND)lParam]->execute(uMsg, wParam, lParam);
 		break;

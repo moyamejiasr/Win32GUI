@@ -7,6 +7,7 @@ EditText::EditText()
 EditText::EditText(Control* parent, std::string name, RECT rect)
 	: Control(parent, name, rect.right, rect.bottom)
 {
+	cmnControlInit(ICC_STANDARD_CLASSES);
 	setLocation(rect.left, rect.top);
 	mBkBrush = (HBRUSH)GetStockObject(WHITE_BRUSH);
 	mStyle |= WS_CHILD | WS_VISIBLE;
@@ -17,6 +18,7 @@ EditText::EditText(Control* parent, std::string name, RECT rect)
 EditText::EditText(Control* parent, std::string name, int width, int height)
 	: Control(parent, name, width, height)
 {
+	cmnControlInit(ICC_STANDARD_CLASSES);
 	mBkBrush = (HBRUSH)GetStockObject(WHITE_BRUSH);
 	mStyle |= WS_CHILD | WS_VISIBLE;
 	mType = WC_EDIT;

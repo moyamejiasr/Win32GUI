@@ -55,12 +55,13 @@ int main() {
 - EditText 100%
 - PictureBox 100%
 - Button 100%
-- ImageButton 0%
-- GroupBox 0%
 - CheckBox 90%
+- GroupBox 0%
+- ImageButton 0%
 - ListBox 0%
+- StatusBar 0%
 - TreeView 0%
-- ComboBox 0%
+- ComboBox 100%
 - ProgressBar 100%
 - TrackBar 100%
 - TopMenuBar 100%

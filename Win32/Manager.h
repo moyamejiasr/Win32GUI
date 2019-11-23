@@ -8,6 +8,8 @@
 #include "MultiEditText.h"
 #include "Button.h"
 #include "CheckBox.h"
+#include "ComboBox.h"
+#include "FixedComboBox.h"
 #include "TrackBar.h"
 #include "ProgressBar.h"
 #endif

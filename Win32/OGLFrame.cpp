@@ -7,6 +7,7 @@ OGLFrame::OGLFrame()
 OGLFrame::OGLFrame(Control* parent, RECT rect)
 	: Control(parent, "", rect.right, rect.bottom)
 {
+	cmnControlInit(ICC_STANDARD_CLASSES);
 	setLocation(rect.left, rect.top);
 	mStyle = WS_CHILD | WS_VISIBLE | CS_OWNDC | CS_VREDRAW | CS_HREDRAW | SS_NOTIFY;
 	mType = WC_STATIC;
@@ -17,6 +18,7 @@ OGLFrame::OGLFrame(Control* parent, RECT rect)
 OGLFrame::OGLFrame(Control* parent, int width, int height)
 	: Control(parent, "", width, height)
 {
+	cmnControlInit(ICC_STANDARD_CLASSES);
 	mStyle = WS_CHILD | WS_VISIBLE | CS_OWNDC | CS_VREDRAW | CS_HREDRAW | SS_NOTIFY;
 	mType = WC_STATIC;
 	create();

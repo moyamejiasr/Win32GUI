@@ -3,8 +3,6 @@
 
 #include "Control.h"
 
-//using f_onPositionChanged = void(*)(Control*, int pos);
-
 enum ProgressState
 {
 	Normal = PBST_NORMAL,

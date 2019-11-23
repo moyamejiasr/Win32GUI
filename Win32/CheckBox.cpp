@@ -7,6 +7,7 @@ CheckBox::CheckBox()
 CheckBox::CheckBox(Control* parent, std::string name, RECT rect)
 	: Button(parent, name, rect.right, rect.bottom)
 {
+	cmnControlInit(ICC_STANDARD_CLASSES);
 	setLocation(rect.left, rect.top);
 	mParent = parent;
 	mStyle = WS_CHILD | WS_VISIBLE | BS_NOTIFY | BS_AUTOCHECKBOX;
@@ -17,6 +18,7 @@ CheckBox::CheckBox(Control* parent, std::string name, RECT rect)
 CheckBox::CheckBox(Control* parent, std::string name, int width, int height)
 	: Button(parent, name, width, height)
 {
+	cmnControlInit(ICC_STANDARD_CLASSES);
 	mParent = parent;
 	mStyle = WS_CHILD | WS_VISIBLE | BS_NOTIFY | BS_AUTOCHECKBOX;
 	mType = WC_BUTTON;

@@ -7,6 +7,7 @@ PictureBox::PictureBox()
 PictureBox::PictureBox(Control* parent, HBITMAP img, RECT rect)
 	: Control(parent, "", rect.right, rect.bottom)
 {
+	cmnControlInit(ICC_STANDARD_CLASSES);
 	setLocation(rect.left, rect.top);
 	mStyle = WS_CHILD | WS_VISIBLE | SS_BITMAP | SS_NOTIFY | SS_REALSIZECONTROL;
 	mType = WC_STATIC;
@@ -17,6 +18,7 @@ PictureBox::PictureBox(Control* parent, HBITMAP img, RECT rect)
 PictureBox::PictureBox(Control* parent, HBITMAP img, int width, int height)
 	: Control(parent, "", width, height)
 {
+	cmnControlInit(ICC_STANDARD_CLASSES);
 	mBitmap = img;
 	mStyle = WS_CHILD | WS_VISIBLE | SS_BITMAP | SS_NOTIFY | SS_REALSIZECONTROL;
 	mType = WC_STATIC;

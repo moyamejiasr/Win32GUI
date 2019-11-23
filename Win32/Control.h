@@ -26,14 +26,18 @@ class EditText;
 class MultiEditText;
 class Button;
 class CheckBox;
+class ComboBox;
+class FixedComboBox;
 class TrackBar;
 class ProgressBar;
 class OGLFrame;
 
 using f_onHover = void(*)(Control*, bool);
+using f_onFocus = void(*)(Control*, bool);
 using f_onClick = void(*)(Control*);
 using f_onDoubleClick = void(*)(Control*);
 using f_onMenuClick = void(*)(Control*, int);
+using f_onSelect = void(*)(Control*, int);
 
 enum Align
 {
