@@ -12,6 +12,8 @@ processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 #include <afxwin.h>
 
 #include <iostream>
+#include <thread>
+#include <chrono>
 #include <string>
 #include <vector>
 #include <unordered_map>
@@ -20,6 +22,7 @@ processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
 class Control;
 class Window;
+class OGLWindow;
 class TextView;
 class PictureBox;
 class EditText;
@@ -30,8 +33,8 @@ class ComboBox;
 class FixedComboBox;
 class TrackBar;
 class ProgressBar;
-class OGLFrame;
 
+using f_onRender = void(*)(long long);
 using f_onHover = void(*)(Control*, bool);
 using f_onFocus = void(*)(Control*, bool);
 using f_onClick = void(*)(Control*);
@@ -59,11 +62,13 @@ public:
 	Control* child(int);
 	bool create();
 	void destroy();
-	void show();
+	virtual void show();
 	void hide();
 	void enable();
 	void disable();
 	void redraw();
+	void setGlobalSleepTime(int);
+	void setOnRender(f_onRender);
 	void setOnHover(f_onHover);
 	void setOnMenuClick(f_onMenuClick);
 	void setVisibile(bool);
@@ -102,6 +107,7 @@ public:
 	virtual std::string getText();
 	bool isVisible();
 	void join();
+	void ljoin();
 protected:
 	friend class Window;
 	virtual LRESULT execute(UINT, WPARAM, LPARAM);
@@ -110,7 +116,9 @@ protected:
 	static thread_local std::string mClassName;
 	static thread_local WNDCLASSEX mWndClass;
 	static thread_local std::unordered_map<HWND, Control*> mControls;
+	static thread_local int mLapse;
 	static thread_local HICON mIcon;
+	static thread_local f_onRender mOnRender;
 	f_onHover mOnHover = nullptr;
 	f_onMenuClick mOnMenuClick = nullptr;
 	bool mCreated = false;
@@ -136,7 +144,8 @@ protected:
 
 	Control();
 	Control(Control*, std::string, int, int);
-	bool globalClassInit();
+	Control(Control*, DWORD, std::string, int, int);
+	bool globalClassInit(DWORD = 0);
 	bool cmnControlInit(DWORD);
 	void eraseWithChilds();
 	bool ctlExists(DWORD);

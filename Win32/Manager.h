@@ -1,6 +1,9 @@
 #pragma once
 
 #include "Window.h"
+#ifdef _OGLWINDOW
+#include "OGLWindow.h"
+#endif
 #ifndef _MINIMAL
 #include "TextView.h"
 #include "PictureBox.h"
@@ -12,9 +15,6 @@
 #include "FixedComboBox.h"
 #include "TrackBar.h"
 #include "ProgressBar.h"
-#endif
-#ifdef _OGL
-#include "OGLFrame.h"
 #endif
 
 #define Invisible (HBRUSH)GetStockObject(HOLLOW_BRUSH)

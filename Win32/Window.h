@@ -47,7 +47,7 @@ public:
 	void setMaxSize(int, int);
 	void setMenu(HMENU);
 protected:
-	friend class Control;
+	Window(Control*, std::string, DWORD, int = 320, int = 240);
 	f_onClose mOnClose = nullptr;
 	f_onResize mOnResize = nullptr;
 	f_onMove mOnMove = nullptr;

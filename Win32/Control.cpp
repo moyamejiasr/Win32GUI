@@ -1,12 +1,11 @@
 #include "Control.h"
 
 thread_local WNDCLASSEX Control::mWndClass{};
-
 thread_local std::string Control::mClassName;
-
 thread_local std::unordered_map<HWND, Control*> Control::mControls;
-
+thread_local int Control::mLapse = 16;
 thread_local HICON Control::mIcon = LoadIcon(NULL, IDI_APPLICATION);
+thread_local f_onRender Control::mOnRender = nullptr;
 
 Control* Control::child(int id)
 {
@@ -37,6 +36,16 @@ void Control::redraw()
 {
 	if (mCreated)
 		InvalidateRect(mHwnd, NULL, TRUE);
+}
+
+void Control::setGlobalSleepTime(int value)
+{
+	mLapse = value;
+}
+
+void Control::setOnRender(f_onRender call)
+{
+	mOnRender = call;
 }
 
 void Control::setOnHover(f_onHover call)
@@ -310,14 +319,43 @@ void Control::join()
 	}
 }
 
+void Control::ljoin()
+{
+	MSG msg;
+	std::chrono::time_point<std::chrono::system_clock> t =
+		std::chrono::system_clock::now();
+	while (true)
+	{
+		t += std::chrono::milliseconds(mLapse);
+		std::this_thread::sleep_until(t);
+		
+		if (mOnRender)
+			mOnRender(t.time_since_epoch().count());
+
+		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+		{
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+	}
+}
+
 Control::Control()
 {
-	globalClassInit();
 }
 
 Control::Control(Control* parent, std::string name, int width, int height)
 {
 	globalClassInit();
+	mBkBrush = mWndClass.hbrBackground;
+	mParent = parent;
+	setText(name);
+	setSize(width, height);
+}
+
+Control::Control(Control* parent, DWORD flags, std::string name, int width, int height)
+{
+	globalClassInit(flags);
 	mBkBrush = mWndClass.hbrBackground;
 	mParent = parent;
 	setText(name);
@@ -369,7 +407,7 @@ void Control::destroy()
 	mCreated = DestroyWindow(mHwnd);
 }
 
-bool Control::globalClassInit()
+bool Control::globalClassInit(DWORD flags)
 {
 	NONCLIENTMETRICS metrics{};
 	metrics.cbSize = sizeof(NONCLIENTMETRICS);
@@ -381,6 +419,7 @@ bool Control::globalClassInit()
 	// Create unique class name
 	mClassName = std::to_string(GetCurrentThreadId());
 	// Set class data
+	mWndClass.style = flags;
 	mWndClass.cbSize = sizeof(mWndClass);
 	mWndClass.lpfnWndProc = WndProc;
 	mWndClass.hInstance = GetModuleHandle(NULL);

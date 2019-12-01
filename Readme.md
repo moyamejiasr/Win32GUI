@@ -66,7 +66,7 @@ int main() {
 - TrackBar 100%
 - TopMenuBar 100%
 - ContextMenu 100%
-- OGLFrame 70%
+- OGLWindow 100%
 
 # To-Do
 - Add controls constructor without creation

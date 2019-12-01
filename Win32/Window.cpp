@@ -171,6 +171,12 @@ void Window::setMenu(HMENU ctl)
 
 }
 
+Window::Window(Control* parent, std::string name, DWORD flags, int width, int height)
+	:Control(parent, flags, name, width, height)
+{
+	mType = mWndClass.lpszClassName;
+}
+
 void Window::setMinMaxInfo(LPARAM& lParam)
 {
 	LPMINMAXINFO lpMMI = (LPMINMAXINFO)lParam;
