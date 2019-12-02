@@ -3,12 +3,12 @@
 
 #include "Button.h"
 
-class CheckBox : public Button
+class RadioButton : public Button
 {
 public:
-	CheckBox();
-	CheckBox(Control*, std::string, RECT);
-	CheckBox(Control*, std::string, int = 0, int = 0);
+	RadioButton();
+	RadioButton(Control*, std::string, RECT);
+	RadioButton(Control*, std::string, int = 0, int = 0);
 
 	void check();
 	void uncheck();

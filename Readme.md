@@ -2,7 +2,7 @@
 Win32 OOP version of the WinAPI for creating Windows Forms. 
 I developed this tool for building more lightweight UI programs for Windows with no need of any third party frameworks.
 
-⚠ *This project is still in an early stage of development and may lack some controls or functionalities.*
+⚠ *This project is still in development and may lack some controls or functionalities.*
 
 ### Win32GUI approach
 Since the Win32 API is a very complex functional tool Win32GUI handles some aspects of it by itself like the WNDCLASS registration.
@@ -55,12 +55,13 @@ int main() {
 - EditText 100%
 - PictureBox 100%
 - Button 100%
-- CheckBox 90%
-- GroupBox 0%
+- CheckBox 100%
+- RadioButton 100%
+- GroupBox 100%
 - ImageButton 0%
 - ListBox 0%
-- StatusBar 0%
 - TreeView 0%
+- StatusBar 0% *Not Important*
 - ComboBox 100%
 - ProgressBar 100%
 - TrackBar 100%

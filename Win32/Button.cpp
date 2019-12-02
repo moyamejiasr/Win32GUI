@@ -47,6 +47,14 @@ void Button::setAlign(Align margin)
 		appendFlag(BS_RIGHT);
 }
 
+void Button::setFlat(bool state)
+{
+	if (state)
+		appendFlag(BS_FLAT);
+	else
+		removeFlag(BS_FLAT);
+}
+
 Align Button::getAlign()
 {
 	if (hasFlag(BS_LEFT))

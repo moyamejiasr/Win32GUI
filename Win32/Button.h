@@ -13,6 +13,7 @@ public:
 	void setOnClick(f_onClick);
 	void setOnDoubleClick(f_onDoubleClick);
 	void setAlign(Align);
+	void setFlat(bool);
 	Align getAlign();
 protected:
 	f_onClick mOnClick;

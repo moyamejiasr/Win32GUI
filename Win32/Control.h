@@ -27,8 +27,10 @@ class TextView;
 class PictureBox;
 class EditText;
 class MultiEditText;
+class GroupBox;
 class Button;
 class CheckBox;
+class RadioButton;
 class ComboBox;
 class FixedComboBox;
 class TrackBar;
@@ -41,6 +43,7 @@ using f_onClick = void(*)(Control*);
 using f_onDoubleClick = void(*)(Control*);
 using f_onMenuClick = void(*)(Control*, int);
 using f_onSelect = void(*)(Control*, int);
+using f_onCheckChange = void(*)(Control*, bool);
 
 enum Align
 {

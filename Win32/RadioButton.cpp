@@ -1,54 +1,54 @@
-#include "CheckBox.h"
+#include "RadioButton.h"
 
-CheckBox::CheckBox()
+RadioButton::RadioButton()
 {
 }
 
-CheckBox::CheckBox(Control* parent, std::string name, RECT rect)
+RadioButton::RadioButton(Control* parent, std::string name, RECT rect)
 	: Button(name, rect.right, rect.bottom)
 {
 	cmnControlInit(ICC_STANDARD_CLASSES);
 	setLocation(rect.left, rect.top);
 	mParent = parent;
-	mStyle = WS_CHILD | WS_VISIBLE | BS_NOTIFY | BS_AUTOCHECKBOX;
+	mStyle = WS_CHILD | WS_VISIBLE | BS_NOTIFY | BS_AUTORADIOBUTTON;
 	mType = WC_BUTTON;
 	create();
 }
 
-CheckBox::CheckBox(Control* parent, std::string name, int width, int height)
+RadioButton::RadioButton(Control* parent, std::string name, int width, int height)
 	: Button(name, width, height)
 {
 	cmnControlInit(ICC_STANDARD_CLASSES);
 	mParent = parent;
-	mStyle = WS_CHILD | WS_VISIBLE | BS_NOTIFY | BS_AUTOCHECKBOX;
+	mStyle = WS_CHILD | WS_VISIBLE | BS_NOTIFY | BS_AUTORADIOBUTTON;
 	mType = WC_BUTTON;
 	create();
 }
 
-void CheckBox::check()
+void RadioButton::check()
 {
 	setChecked(true);
 }
 
-void CheckBox::uncheck()
+void RadioButton::uncheck()
 {
 	setChecked(false);
 }
 
-void CheckBox::setOnCheckChange(f_onCheckChange call)
+void RadioButton::setOnCheckChange(f_onCheckChange call)
 {
 	mOnCheckChange = call;
 }
 
-void CheckBox::setChecked(bool state)
+void RadioButton::setChecked(bool state)
 {
 	mChecked = state;
 	if (mCreated)
-		SendMessage(mHwnd, BM_SETCHECK, 
+		SendMessage(mHwnd, BM_SETCHECK,
 			mChecked ? BST_CHECKED : BST_UNCHECKED, 0);
 }
 
-LRESULT CheckBox::execute(UINT uMsg, WPARAM wParam, LPARAM lParam)
+LRESULT RadioButton::execute(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	if (HIWORD(wParam) == BN_CLICKED)
 	{
