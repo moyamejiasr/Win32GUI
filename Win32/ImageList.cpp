@@ -2,7 +2,7 @@
 
 ImageList::ImageList(int size, int x, int y)
 {
-	mIList = ImageList_Create(x, y, ILC_MASK, size, 0);
+	mIList = ImageList_Create(x, y, ILC_COLOR32, size, 0);
 }
 
 ImageList::~ImageList()

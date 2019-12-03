@@ -45,3 +45,8 @@ void OGLWindow::swapBuffers()
 {
 	SwapBuffers(mDc);
 }
+
+HDC OGLWindow::hdc()
+{
+	return mDc;
+}

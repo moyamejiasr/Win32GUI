@@ -60,7 +60,7 @@ int main() {
 - GroupBox 100%
 - ImageButton 0%
 - ImageList 100%
-- TabControl 50%
+- TabControl 70%
 - ListBox 0%
 - TreeView 20%
 - StatusBar 0% *Ignored for now*

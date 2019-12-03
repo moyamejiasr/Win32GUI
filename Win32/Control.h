@@ -119,6 +119,7 @@ protected:
 	virtual LRESULT execute(UINT, WPARAM, LPARAM);
 	virtual LRESULT drawctl(UINT, WPARAM, LPARAM);
 	static LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
+	static LRESULT CALLBACK SubWndProc(HWND, UINT, WPARAM, LPARAM, UINT_PTR, DWORD_PTR);
 	static thread_local std::string mClassName;
 	static thread_local WNDCLASSEX mWndClass;
 	static thread_local bool mLoopAlive;
@@ -140,7 +141,7 @@ protected:
 	HBRUSH mBkBrush;
 	int mX = CW_USEDEFAULT, mY = 0;
 	int mWidth, mHeight;
-	int mClientWidth, mClientHeight;
+	RECT mClientRect{ 0 };
 	HWND mHwnd;
 	LOGFONT mLogFont;
 	HFONT mFont = nullptr;

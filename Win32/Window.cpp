@@ -188,11 +188,11 @@ void Window::setMinMaxInfo(LPARAM& lParam)
 
 void Window::callResize(LPARAM lParam)
 {
-	mClientWidth = LOWORD(lParam);
-	mClientHeight = HIWORD(lParam);
+	mClientRect.right = LOWORD(lParam);
+	mClientRect.bottom = HIWORD(lParam);
 	updateWindowRect();
 	if (mOnResize != nullptr)
-		mOnResize(this, mClientWidth, mClientHeight);
+		mOnResize(this, mClientRect.right, mClientRect.bottom);
 }
 
 void Window::callMove(LPARAM lParam)
@@ -289,6 +289,10 @@ LRESULT Window::execute(UINT uMsg, WPARAM wParam, LPARAM lParam)
 		}
 		else if (ctlExists(lParam)) // Otherwise command
 			return mControls[(HWND)lParam]->execute(uMsg, wParam, lParam);
+		break;
+	case WM_NOTIFY: /* Extenden commands */
+		if (ctlExists((DWORD)((LPNMHDR)lParam)->hwndFrom))
+			return mControls[((LPNMHDR)lParam)->hwndFrom]->execute(uMsg, wParam, lParam);
 		break;
 	case WM_VSCROLL: /* On TrackBar Scroll set */
 	case WM_HSCROLL: /* On TrackBar Scroll set */

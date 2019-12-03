@@ -14,6 +14,7 @@ TabControl::TabControl(Control* parent, RECT rect)
 	create();
 	// Hide legacy dots focus on select
 	SendMessage(mHwnd, WM_UPDATEUISTATE, MAKEWPARAM(UIS_SET, UISF_HIDEFOCUS), 0);
+	adjustClientRect();
 }
 
 TabControl::TabControl(Control* parent, int width, int height)
@@ -25,6 +26,7 @@ TabControl::TabControl(Control* parent, int width, int height)
 	create();
 	// Hide legacy dots focus on select
 	SendMessage(mHwnd, WM_UPDATEUISTATE, MAKEWPARAM(UIS_SET, UISF_HIDEFOCUS), 0);
+	adjustClientRect();
 }
 
 void TabControl::appendPage(std::string str)
@@ -35,7 +37,10 @@ void TabControl::appendPage(std::string str)
 	mPages.push_back(item);
 
 	if (mCreated)
-		SendMessageW(mHwnd, TCM_INSERTITEM, mPages.size()-1, (LPARAM)&item);
+	{
+		SendMessageW(mHwnd, TCM_INSERTITEM, mPages.size() - 1, (LPARAM)& item);
+		adjustClientRect();
+	}
 }
 
 void TabControl::appendPage(std::string str, int idx)
@@ -47,7 +52,35 @@ void TabControl::appendPage(std::string str, int idx)
 	mPages.push_back(item);
 
 	if (mCreated)
-		SendMessageW(mHwnd, TCM_INSERTITEM, mPages.size() - 1, (LPARAM)& item);
+	{
+		SendMessageW(mHwnd, TCM_INSERTITEM, mPages.size()-1, (LPARAM)&item);
+		adjustClientRect();
+	}
+}
+
+void TabControl::setOnSelect(f_onSelect call)
+{
+	mOnSelectionChanged = call;
+}
+
+void TabControl::removePage(int index)
+{
+	mPages.erase(mPages.begin() + index);
+	if (mCreated)
+		SendMessage(mHwnd, TCM_DELETEITEM, index, 0);
+}
+
+void TabControl::removeAll()
+{
+	mPages.clear();
+	if (mCreated)
+		SendMessage(mHwnd, TCM_DELETEALLITEMS, 0, 0);
+}
+
+void TabControl::select(int index)
+{
+	if (mCreated)
+		SendMessage(mHwnd, TCM_SETCURSEL, index, 0);
 }
 
 void TabControl::setImageList(ImageList* list)
@@ -63,16 +96,59 @@ void TabControl::setBottomTabs(bool state)
 		removeFlag(TCS_BOTTOM);
 }
 
+std::string TabControl::at(int idx)
+{
+	return mPages[idx].pszText;
+}
+
+int TabControl::size()
+{
+	return SendMessage(mHwnd, TCM_GETITEMCOUNT, 0, 0);
+}
+
+int TabControl::selectedIndex()
+{
+	return SendMessage(mHwnd, TCM_GETCURSEL, 0, 0);
+}
+
+std::string TabControl::selectedText()
+{
+	return mPages[selectedIndex()].pszText;
+}
+
+void TabControl::setSize(int width, int height)
+{
+	Control::setSize(width, height);
+	// Update client rect left
+	adjustClientRect();
+}
+
+void TabControl::setRect(RECT rect)
+{
+	Control::setRect(rect);
+	// Update client rect left
+	adjustClientRect();
+}
+
+void TabControl::adjustClientRect()
+{
+	RECT rect{};
+	SendMessage(mHwnd, TCM_ADJUSTRECT, FALSE, (LPARAM)&rect);
+	mClientRect.left = rect.left;
+	mClientRect.top = rect.top;
+}
+
 LRESULT TabControl::execute(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	switch (HIWORD(wParam))
+	switch (((LPNMHDR)lParam)->code)
 	{
-	case TCN_SELCHANGING:
-		// Return FALSE to allow the selection to change.
-		return FALSE;
 	case TCN_SELCHANGE:
-		int iPage = TabCtrl_GetCurSel(mHwnd);
+	{
+		int iPage = selectedIndex();
+		if (mOnSelectionChanged)
+			mOnSelectionChanged(this, iPage);
 		break;
+	}
 	}
 	return DefWindowProc(mHwnd, uMsg, wParam, lParam);
 }

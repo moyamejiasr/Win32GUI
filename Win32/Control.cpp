@@ -236,12 +236,12 @@ int Control::getHeight()
 
 int Control::getClientWidth()
 {
-	return mClientWidth;
+	return mClientRect.right;
 }
 
 int Control::getClientHeight()
 {
-	return mClientHeight;
+	return mClientRect.bottom;
 }
 
 RECT Control::getRect()
@@ -254,10 +254,7 @@ RECT Control::getRect()
 
 RECT Control::getClientRect()
 {
-	return RECT{
-		0, 0,
-		mClientWidth, mClientHeight
-	};
+	return mClientRect;
 }
 
 bool Control::hasFlag(DWORD flag)
@@ -468,12 +465,7 @@ bool Control::ctlExists(DWORD param)
 
 void Control::updateClientRect()
 {
-	RECT rect;
-	if (GetClientRect(mHwnd, &rect))
-	{
-		mClientWidth = rect.right; 
-		mClientHeight = rect.bottom;
-	}
+	GetClientRect(mHwnd, &mClientRect);
 }
 
 void Control::updateWindowRect()
@@ -529,10 +521,16 @@ LRESULT Control::drawctl(UINT uMsg, WPARAM wParam, LPARAM lParam)
 	return (LRESULT)DefWindowProc(mHwnd, uMsg, wParam, lParam);
 }
 
+#ifdef _DEBUG_MSG
+#include "Debug.h"
+#endif
 LRESULT CALLBACK Control::WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 #ifdef _DEBUG_MSG
-	std::cout << uMsg << std::endl;
+	if (wmTranslation.find(uMsg) != wmTranslation.end())
+		std::cout << wmTranslation[uMsg] << "::" << uMsg << std::endl;
+	else
+		std::cout << "UNKNOWN" << "::" << uMsg << std::endl;
 #endif
 	if (mControls.find(hwnd) != mControls.end())
 		return mControls[hwnd]->execute(uMsg, wParam, lParam);

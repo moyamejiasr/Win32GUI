@@ -15,6 +15,7 @@ public:
 
 	virtual void show();
 	void swapBuffers();
+	HDC hdc();
 protected:
 	bool mInitialized = false;
 	PIXELFORMATDESCRIPTOR mPfd{ 0 };
