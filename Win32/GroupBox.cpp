@@ -22,3 +22,10 @@ GroupBox::GroupBox(Control* parent, std::string name, int width, int height)
 	mType = WC_BUTTON;
 	create();
 }
+
+LRESULT GroupBox::drawctl(UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	SetBkMode((HDC)wParam, TRANSPARENT);
+	SetTextColor((HDC)wParam, mFtColor);
+	return (LRESULT)mBkBrush;
+}

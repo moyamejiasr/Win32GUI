@@ -315,7 +315,10 @@ LRESULT Window::execute(UINT uMsg, WPARAM wParam, LPARAM lParam)
 	case WM_DESTROY: /* Window Execute close attempts */
 		eraseWithChilds();
 		if (mControls.size() == 0)
+		{
 			PostQuitMessage(0);
+			mLoopAlive = false;
+		}
 		break;
 	}
 	return DefWindowProc(mHwnd, uMsg, wParam, lParam);

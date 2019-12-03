@@ -9,6 +9,7 @@
 #include "PictureBox.h"
 #include "EditText.h"
 #include "MultiEditText.h"
+#include "TabControl.h"
 #include "GroupBox.h"
 #include "Button.h"
 #include "CheckBox.h"

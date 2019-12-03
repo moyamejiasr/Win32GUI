@@ -162,6 +162,6 @@ LRESULT EditText::execute(UINT uMsg, WPARAM wParam, LPARAM lParam)
 LRESULT EditText::drawctl(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	SetBkMode((HDC)wParam, TRANSPARENT);
-	SetTextColor((HDC)wParam, RGB(255, 0, 0));
+	SetTextColor((HDC)wParam, mFtColor);
 	return (LRESULT)mBkBrush;
 }

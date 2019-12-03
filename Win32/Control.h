@@ -19,6 +19,7 @@ processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 #include <unordered_map>
 
 #include "MenuControl.h"
+#include "ImageList.h"
 
 class Control;
 class Window;
@@ -27,6 +28,7 @@ class TextView;
 class PictureBox;
 class EditText;
 class MultiEditText;
+class TabControl;
 class GroupBox;
 class Button;
 class CheckBox;
@@ -84,6 +86,7 @@ public:
 	void setUnderline(bool);
 	void setStrikeout(bool);
 	void setFont(std::string);
+	void setTextColor(COLORREF);
 	void setBackground(HBRUSH);
 	void setOldStyle(bool);
 	POINT getCursorPos();
@@ -118,6 +121,7 @@ protected:
 	static LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 	static thread_local std::string mClassName;
 	static thread_local WNDCLASSEX mWndClass;
+	static thread_local bool mLoopAlive;
 	static thread_local std::unordered_map<HWND, Control*> mControls;
 	static thread_local int mLapse;
 	static thread_local HICON mIcon;
@@ -132,7 +136,7 @@ protected:
 	DWORD mStyle = NULL;
 	DWORD mExStyle = NULL;
 	HCURSOR mCursor;
-	COLORREF mFtColor;
+	COLORREF mFtColor = 0x0;
 	HBRUSH mBkBrush;
 	int mX = CW_USEDEFAULT, mY = 0;
 	int mWidth, mHeight;

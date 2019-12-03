@@ -7,8 +7,8 @@ class RadioButton : public Button
 {
 public:
 	RadioButton();
-	RadioButton(Control*, std::string, RECT);
-	RadioButton(Control*, std::string, int = 0, int = 0);
+	RadioButton(Control*, std::string, bool, RECT);
+	RadioButton(Control*, std::string, bool, int = 0, int = 0);
 
 	void check();
 	void uncheck();

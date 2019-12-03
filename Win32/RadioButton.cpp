@@ -4,23 +4,27 @@ RadioButton::RadioButton()
 {
 }
 
-RadioButton::RadioButton(Control* parent, std::string name, RECT rect)
+RadioButton::RadioButton(Control* parent, std::string name, bool ngroup, RECT rect)
 	: Button(name, rect.right, rect.bottom)
 {
 	cmnControlInit(ICC_STANDARD_CLASSES);
 	setLocation(rect.left, rect.top);
 	mParent = parent;
 	mStyle = WS_CHILD | WS_VISIBLE | BS_NOTIFY | BS_AUTORADIOBUTTON;
+	if (ngroup)
+		mStyle |= WS_GROUP;
 	mType = WC_BUTTON;
 	create();
 }
 
-RadioButton::RadioButton(Control* parent, std::string name, int width, int height)
+RadioButton::RadioButton(Control* parent, std::string name, bool ngroup, int width, int height)
 	: Button(name, width, height)
 {
 	cmnControlInit(ICC_STANDARD_CLASSES);
 	mParent = parent;
 	mStyle = WS_CHILD | WS_VISIBLE | BS_NOTIFY | BS_AUTORADIOBUTTON;
+	if (ngroup)
+		mStyle |= WS_GROUP;
 	mType = WC_BUTTON;
 	create();
 }

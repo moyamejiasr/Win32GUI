@@ -59,9 +59,11 @@ int main() {
 - RadioButton 100%
 - GroupBox 100%
 - ImageButton 0%
+- ImageList 100%
+- TabControl 50%
 - ListBox 0%
-- TreeView 0%
-- StatusBar 0% *Not Important*
+- TreeView 20%
+- StatusBar 0% *Ignored for now*
 - ComboBox 100%
 - ProgressBar 100%
 - TrackBar 100%

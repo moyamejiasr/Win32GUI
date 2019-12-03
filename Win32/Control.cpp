@@ -2,6 +2,7 @@
 
 thread_local WNDCLASSEX Control::mWndClass{};
 thread_local std::string Control::mClassName;
+thread_local bool Control::mLoopAlive = true;
 thread_local std::unordered_map<HWND, Control*> Control::mControls;
 thread_local int Control::mLapse = 16;
 thread_local HICON Control::mIcon = LoadIcon(NULL, IDI_APPLICATION);
@@ -167,6 +168,11 @@ void Control::setFont(std::string str)
 	mLogFont.lfFaceName[nLen] = '\0';
 }
 
+void Control::setTextColor(COLORREF value)
+{
+	mFtColor = value;
+}
+
 void Control::setBackground(HBRUSH brush)
 {
 	mBkBrush = brush;
@@ -324,7 +330,7 @@ void Control::ljoin()
 	MSG msg;
 	std::chrono::time_point<std::chrono::system_clock> t =
 		std::chrono::system_clock::now();
-	while (true)
+	while (mLoopAlive)
 	{
 		t += std::chrono::milliseconds(mLapse);
 		std::this_thread::sleep_until(t);
