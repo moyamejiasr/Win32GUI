@@ -14,6 +14,8 @@ TabControl::TabControl(Control* parent, RECT rect)
 	create();
 	// Hide legacy dots focus on select
 	SendMessage(mHwnd, WM_UPDATEUISTATE, MAKEWPARAM(UIS_SET, UISF_HIDEFOCUS), 0);
+	SetWindowSubclass(mHwnd, &SubWndProc, (UINT_PTR)mId, 0);
+
 	adjustClientRect();
 }
 
@@ -26,6 +28,8 @@ TabControl::TabControl(Control* parent, int width, int height)
 	create();
 	// Hide legacy dots focus on select
 	SendMessage(mHwnd, WM_UPDATEUISTATE, MAKEWPARAM(UIS_SET, UISF_HIDEFOCUS), 0);
+	SetWindowSubclass(mHwnd, &SubWndProc, (UINT_PTR)mId, 0);
+
 	adjustClientRect();
 }
 
@@ -138,7 +142,7 @@ void TabControl::adjustClientRect()
 	mClientRect.top = rect.top;
 }
 
-LRESULT TabControl::execute(UINT uMsg, WPARAM wParam, LPARAM lParam)
+LRESULT TabControl::cnotify(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	switch (((LPNMHDR)lParam)->code)
 	{

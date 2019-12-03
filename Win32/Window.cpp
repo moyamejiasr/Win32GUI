@@ -292,7 +292,7 @@ LRESULT Window::execute(UINT uMsg, WPARAM wParam, LPARAM lParam)
 		break;
 	case WM_NOTIFY: /* Extenden commands */
 		if (ctlExists((DWORD)((LPNMHDR)lParam)->hwndFrom))
-			return mControls[((LPNMHDR)lParam)->hwndFrom]->execute(uMsg, wParam, lParam);
+			return mControls[((LPNMHDR)lParam)->hwndFrom]->cnotify(uMsg, wParam, lParam);
 		break;
 	case WM_VSCROLL: /* On TrackBar Scroll set */
 	case WM_HSCROLL: /* On TrackBar Scroll set */
@@ -302,6 +302,7 @@ LRESULT Window::execute(UINT uMsg, WPARAM wParam, LPARAM lParam)
 	case WM_CTLCOLORSTATIC:
 	case WM_CTLCOLOREDIT:
 	case WM_CTLCOLORBTN:
+	case WM_CTLCOLORLISTBOX:
 		if (ctlExists(lParam))
 			return mControls[(HWND)lParam]->drawctl(uMsg, wParam, lParam);
 		break;
@@ -317,7 +318,7 @@ LRESULT Window::execute(UINT uMsg, WPARAM wParam, LPARAM lParam)
 		close();
 		return false;
 	case WM_DESTROY: /* Window Execute close attempts */
-		eraseWithChilds();
+		eraseWithChilds(this);
 		if (mControls.size() == 0)
 		{
 			PostQuitMessage(0);

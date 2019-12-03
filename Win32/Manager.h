@@ -12,12 +12,14 @@
 #include "TabControl.h"
 #include "GroupBox.h"
 #include "Button.h"
+#include "ImageButton.h"
 #include "CheckBox.h"
 #include "RadioButton.h"
 #include "ComboBox.h"
 #include "FixedComboBox.h"
 #include "TrackBar.h"
 #include "ProgressBar.h"
+#include "ListBox.h"
 #endif
 
 #define Invisible (HBRUSH)GetStockObject(HOLLOW_BRUSH)

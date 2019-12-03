@@ -29,6 +29,6 @@ protected:
 	std::vector<TCITEM> mPages;
 
 	void adjustClientRect();
-	virtual LRESULT execute(UINT, WPARAM, LPARAM);
+	virtual LRESULT cnotify(UINT, WPARAM, LPARAM);
 	virtual LRESULT drawctl(UINT, WPARAM, LPARAM);
 };

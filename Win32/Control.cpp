@@ -451,11 +451,11 @@ bool Control::cmnControlInit(DWORD flag)
 	return InitCommonControlsEx(&icex);
 }
 
-void Control::eraseWithChilds()
+void Control::eraseWithChilds(Control* parent)
 {
-	for (auto const& child : mChildrens)
-		mControls.erase(child->mHwnd);
-	mControls.erase(mHwnd);
+	for (auto const& child : parent->mChildrens)
+		eraseWithChilds(child);
+	mControls.erase(parent->mHwnd);
 }
 
 bool Control::ctlExists(DWORD param)
@@ -516,6 +516,11 @@ LRESULT Control::execute(UINT uMsg, WPARAM wParam, LPARAM lParam)
 	return DefWindowProc(mHwnd, uMsg, wParam, lParam);
 }
 
+LRESULT Control::cnotify(UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	return DefWindowProc(mHwnd, uMsg, wParam, lParam);
+}
+
 LRESULT Control::drawctl(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	return (LRESULT)DefWindowProc(mHwnd, uMsg, wParam, lParam);
@@ -535,4 +540,37 @@ LRESULT CALLBACK Control::WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lP
 	if (mControls.find(hwnd) != mControls.end())
 		return mControls[hwnd]->execute(uMsg, wParam, lParam);
 	return DefWindowProc(hwnd, uMsg, wParam, lParam);
+}
+
+LRESULT Control::SubWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
+{
+#ifdef _DEBUG_MSG
+	if (wmTranslation.find(uMsg) != wmTranslation.end())
+		std::cout << wmTranslation[uMsg] << "::" << uMsg << std::endl;
+	else
+		std::cout << "UNKNOWN" << "::" << uMsg << std::endl;
+#endif
+	switch (uMsg)
+	{
+	case WM_COMMAND: /* Execute specific child command */
+		if (ctlExists(lParam)) // Otherwise command
+			return mControls[(HWND)lParam]->execute(uMsg, wParam, lParam);
+		break;
+	case WM_NOTIFY: /* Extenden commands */
+		if (ctlExists((DWORD)((LPNMHDR)lParam)->hwndFrom))
+			return mControls[((LPNMHDR)lParam)->hwndFrom]->cnotify(uMsg, wParam, lParam);
+		break;
+	case WM_VSCROLL: /* On TrackBar Scroll set */
+	case WM_HSCROLL: /* On TrackBar Scroll set */
+		if (ctlExists(lParam))
+			return mControls[(HWND)lParam]->execute(uMsg, wParam, lParam);
+		break;
+	case WM_CTLCOLORSTATIC:
+	case WM_CTLCOLOREDIT:
+	case WM_CTLCOLORBTN:
+		if (ctlExists(lParam))
+			return mControls[(HWND)lParam]->drawctl(uMsg, wParam, lParam);
+		break;
+	}
+	return DefSubclassProc(hwnd, uMsg, wParam, lParam);
 }

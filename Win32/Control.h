@@ -31,12 +31,14 @@ class MultiEditText;
 class TabControl;
 class GroupBox;
 class Button;
+class ImageButton;
 class CheckBox;
 class RadioButton;
 class ComboBox;
 class FixedComboBox;
 class TrackBar;
 class ProgressBar;
+class ListBox;
 
 using f_onRender = void(*)(long long);
 using f_onHover = void(*)(Control*, bool);
@@ -117,6 +119,7 @@ public:
 protected:
 	friend class Window;
 	virtual LRESULT execute(UINT, WPARAM, LPARAM);
+	virtual LRESULT cnotify(UINT, WPARAM, LPARAM);
 	virtual LRESULT drawctl(UINT, WPARAM, LPARAM);
 	static LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 	static LRESULT CALLBACK SubWndProc(HWND, UINT, WPARAM, LPARAM, UINT_PTR, DWORD_PTR);
@@ -155,8 +158,8 @@ protected:
 	Control(Control*, DWORD, std::string, int, int);
 	bool globalClassInit(DWORD = 0);
 	bool cmnControlInit(DWORD);
-	void eraseWithChilds();
-	bool ctlExists(DWORD);
+	void eraseWithChilds(Control*);
+	static bool ctlExists(DWORD);
 	void updateClientRect();
 	void updateWindowRect();
 	void updateFont();
