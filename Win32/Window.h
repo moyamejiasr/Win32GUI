@@ -9,13 +9,6 @@ using f_onMove = void(*)(Window*, int, int);
 using f_onMouseWheel = void(*)(Window*, int, int);
 using f_onMouseClick = void(*)(Window*, int, int, int);
 
-enum MouseKeys {
-	LeftButton		= WM_LBUTTONDOWN,
-	RightButton		= WM_RBUTTONDOWN,
-	CenterButton	= WM_MBUTTONDOWN,
-	OtherButton		= WM_XBUTTONDOWN,
-};
-
 class Window : public Control
 {
 public:

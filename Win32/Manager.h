@@ -20,6 +20,7 @@
 #include "TrackBar.h"
 #include "ProgressBar.h"
 #include "ListBox.h"
+#include "TreeView.h"
 #endif
 
 #define Invisible (HBRUSH)GetStockObject(HOLLOW_BRUSH)

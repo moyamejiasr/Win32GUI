@@ -39,14 +39,23 @@ class FixedComboBox;
 class TrackBar;
 class ProgressBar;
 class ListBox;
+class TreeView;
+
+enum MouseKeys {
+	LeftButton = WM_LBUTTONDOWN,
+	RightButton = WM_RBUTTONDOWN,
+	CenterButton = WM_MBUTTONDOWN,
+	OtherButton = WM_XBUTTONDOWN,
+};
 
 using f_onRender = void(*)(long long);
 using f_onHover = void(*)(Control*, bool);
 using f_onFocus = void(*)(Control*, bool);
-using f_onClick = void(*)(Control*);
-using f_onDoubleClick = void(*)(Control*);
+using f_onClick = void(*)(Control*, MouseKeys);
+using f_onDoubleClick = void(*)(Control*, MouseKeys);
 using f_onMenuClick = void(*)(Control*, int);
-using f_onSelect = void(*)(Control*, int);
+using f_onSelectIndex = void(*)(Control*, int);
+using f_onSelectItem = void(*)(Control*, LPARAM);
 using f_onCheckChange = void(*)(Control*, bool);
 
 enum Align
@@ -88,7 +97,7 @@ public:
 	void setUnderline(bool);
 	void setStrikeout(bool);
 	void setFont(std::string);
-	void setTextColor(COLORREF);
+	virtual void setTextColor(COLORREF);
 	void setBackground(HBRUSH);
 	void setOldStyle(bool);
 	POINT getCursorPos();

@@ -28,7 +28,7 @@ void ComboBox::setOnFocus(f_onFocus call)
 	mOnFocus = call;
 }
 
-void ComboBox::setOnSelect(f_onSelect call)
+void ComboBox::setOnSelect(f_onSelectIndex call)
 {
 	mOnSelectionChanged = call;
 }

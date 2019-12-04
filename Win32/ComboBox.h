@@ -11,7 +11,7 @@ public:
 	ComboBox(Control*, int = 0, int = 25);
 
 	void setOnFocus(f_onFocus);
-	void setOnSelect(f_onSelect);
+	void setOnSelect(f_onSelectIndex);
 	void showDropDown();
 	void select(int);
 	void select(std::string);
@@ -25,7 +25,7 @@ public:
 protected:
 	ComboBox(Control*, DWORD, int, int);
 	f_onFocus mOnFocus = nullptr;
-	f_onSelect mOnSelectionChanged = nullptr;
+	f_onSelectIndex mOnSelectionChanged = nullptr;
 
 	virtual LRESULT execute(UINT, WPARAM, LPARAM);
 };

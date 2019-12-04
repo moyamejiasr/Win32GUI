@@ -23,7 +23,7 @@ ListBox::ListBox(Control* parent, int width, int height)
 	create();
 }
 
-void ListBox::setOnSelect(f_onSelect call)
+void ListBox::setOnSelect(f_onSelectIndex call)
 {
 	mOnSelectionChanged = call;
 }

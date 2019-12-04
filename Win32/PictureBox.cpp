@@ -79,11 +79,11 @@ LRESULT PictureBox::execute(UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
 	case STN_CLICKED:
 		if (mOnClick != nullptr)
-			mOnClick(this);
+			mOnClick(this, MouseKeys::LeftButton);
 		break;
 	case STN_DBLCLK:
 		if (mOnDoubleClick != nullptr)
-			mOnDoubleClick(this);
+			mOnDoubleClick(this, MouseKeys::LeftButton);
 		break;
 	}
 	return true;

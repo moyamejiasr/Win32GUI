@@ -10,7 +10,7 @@ public:
 	ListBox(Control*, RECT);
 	ListBox(Control*, int = 0, int = 0);
 
-	void setOnSelect(f_onSelect);
+	void setOnSelect(f_onSelectIndex);
 	void select(int);
 	void select(std::string);
 	void appendString(std::string);
@@ -22,7 +22,7 @@ public:
 	int selectedIndex();
 	std::string selectedText();
 protected:
-	f_onSelect mOnSelectionChanged = nullptr;
+	f_onSelectIndex mOnSelectionChanged = nullptr;
 
 	virtual LRESULT execute(UINT, WPARAM, LPARAM);
 	virtual LRESULT drawctl(UINT, WPARAM, LPARAM);

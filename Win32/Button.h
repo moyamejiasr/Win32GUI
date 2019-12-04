@@ -16,8 +16,8 @@ public:
 	void setFlat(bool);
 	Align getAlign();
 protected:
-	f_onClick mOnClick;
-	f_onDoubleClick mOnDoubleClick;
+	f_onClick mOnClick = nullptr;
+	f_onDoubleClick mOnDoubleClick = nullptr;
 
 	Button(std::string, int = 0, int = 0);
 	virtual LRESULT execute(UINT, WPARAM, LPARAM);

@@ -50,7 +50,7 @@ int main() {
 
 # Development
 - Window 95%
-- General Control struct 85%
+- General Control struct 90%
 - TextView 100%
 - EditText 100%
 - PictureBox 100%
@@ -62,7 +62,7 @@ int main() {
 - ImageList 100%
 - TabControl 100%
 - ListBox 100%
-- TreeView 20%
+- TreeView 100%
 - StatusBar 0% *Ignored for now*
 - ComboBox 100%
 - ProgressBar 100%

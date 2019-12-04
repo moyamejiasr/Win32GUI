@@ -62,7 +62,7 @@ void TabControl::appendPage(std::string str, int idx)
 	}
 }
 
-void TabControl::setOnSelect(f_onSelect call)
+void TabControl::setOnSelect(f_onSelectIndex call)
 {
 	mOnSelectionChanged = call;
 }

@@ -12,7 +12,7 @@ public:
 
 	void appendPage(std::string);
 	void appendPage(std::string, int);
-	void setOnSelect(f_onSelect);
+	void setOnSelect(f_onSelectIndex);
 	void removePage(int);
 	void removeAll();
 	void select(int);
@@ -25,7 +25,7 @@ public:
 	virtual void setSize(int, int);
 	virtual void setRect(RECT);
 protected:
-	f_onSelect mOnSelectionChanged = nullptr;
+	f_onSelectIndex mOnSelectionChanged = nullptr;
 	std::vector<TCITEM> mPages;
 
 	void adjustClientRect();

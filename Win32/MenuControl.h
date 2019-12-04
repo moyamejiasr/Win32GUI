@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 
+class MenuControl;
 class MenuStrip;
 class ContextMenuStrip;
 
