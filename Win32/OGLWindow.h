@@ -4,7 +4,6 @@
 #pragma comment(lib, "opengl32.lib")
 
 #include "Window.h"
-#include <gl/GL.h>
 
 class OGLWindow : public Window
 {

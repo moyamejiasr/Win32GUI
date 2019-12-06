@@ -343,6 +343,11 @@ void Control::ljoin()
 	}
 }
 
+HINSTANCE Control::hinstance()
+{
+	return mWndClass.hInstance;
+}
+
 Control::Control()
 {
 }
@@ -537,7 +542,7 @@ LRESULT CALLBACK Control::WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lP
 	else
 		std::cout << "UNKNOWN" << "::" << uMsg << std::endl;
 #endif
-	if (mControls.find(hwnd) != mControls.end())
+	if (ctlExists((DWORD)hwnd))
 		return mControls[hwnd]->execute(uMsg, wParam, lParam);
 	return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }

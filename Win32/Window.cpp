@@ -139,9 +139,9 @@ void Window::allowMinimize(bool state)
 void Window::allowTitleBar(bool state)
 {
 	if (state)
-		appendFlag(WS_POPUPWINDOW);
+		appendFlag(WS_OVERLAPPEDWINDOW);
 	else
-		removeFlag(WS_POPUPWINDOW);
+		removeFlag(WS_OVERLAPPEDWINDOW);
 }
 
 void Window::allowResize(bool state)
@@ -306,6 +306,14 @@ LRESULT Window::execute(UINT uMsg, WPARAM wParam, LPARAM lParam)
 		if (ctlExists(lParam))
 			return mControls[(HWND)lParam]->drawctl(uMsg, wParam, lParam);
 		break;
+	case WM_ERASEBKGND:
+		if (mBkBrush)
+		{
+			RECT rect;
+			GetClientRect(mHwnd, &rect);
+			FillRect((HDC)(wParam), &rect, mBkBrush);
+			return TRUE;
+		}
 	case WM_NCHITTEST: /* Handle possible child window dragNdrop */
 		if (mDraggable)
 		{

@@ -125,6 +125,7 @@ public:
 	bool isVisible();
 	void join();
 	void ljoin();
+	static HINSTANCE hinstance();
 protected:
 	friend class Window;
 	virtual LRESULT execute(UINT, WPARAM, LPARAM);
@@ -150,7 +151,7 @@ protected:
 	DWORD mExStyle = NULL;
 	HCURSOR mCursor;
 	COLORREF mFtColor = 0x0;
-	HBRUSH mBkBrush;
+	HBRUSH mBkBrush = nullptr;
 	int mX = CW_USEDEFAULT, mY = 0;
 	int mWidth, mHeight;
 	RECT mClientRect{ 0 };
