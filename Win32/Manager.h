@@ -206,7 +206,7 @@ std::vector<std::string> OpenMultiFileDialog(UINT size, const COMDLG_FILTERSPEC*
 	return path;
 }
 
-std::string SaveFileDialog(UINT size, const COMDLG_FILTERSPEC* c_rgFileTypes)
+std::string SaveFileDialog(UINT size, const COMDLG_FILTERSPEC* c_rgFileTypes, std::string fName = "")
 {
 	std::string path;
 	if (FAILED(CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE)))
@@ -218,6 +218,7 @@ std::string SaveFileDialog(UINT size, const COMDLG_FILTERSPEC* c_rgFileTypes)
 	hr = CoCreateInstance(CLSID_FileSaveDialog, NULL, CLSCTX_ALL, IID_IFileSaveDialog, (void**)(&pFileSave));
 	hr = pFileSave->SetOptions(FOS_FORCEFILESYSTEM | FOS_OVERWRITEPROMPT);
 	hr = pFileSave->SetFileTypes(size, c_rgFileTypes);
+	hr = pFileSave->SetFileName(ToWString(fName).c_str());
 	if (size) // Append the extension to the file to create
 		hr = pFileSave->SetDefaultExtension(c_rgFileTypes[0].pszSpec);
 
@@ -246,7 +247,7 @@ std::string SaveFileDialog(UINT size, const COMDLG_FILTERSPEC* c_rgFileTypes)
 	return path;
 }
 
-std::string SaveFolderDialog()
+std::string SelectFolderDialog()
 {
 	std::string path;
 	if (FAILED(CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE)))

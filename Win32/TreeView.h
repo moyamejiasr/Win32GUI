@@ -7,10 +7,15 @@ class TreeItem
 {
 public:
 	TreeItem(TreeItem*, std::string, int = -1, int = -1);
+	void setLParam(LPARAM);
+	LPARAM lparam();
+	TreeItem* Parent();
 protected:
 	friend class TreeView;
+	TreeItem* mParent;
 	std::string mText;
 	HTREEITEM mHandler = nullptr;
+	LPARAM mParam = NULL;
 	TVINSERTSTRUCT mStruct{ 0 };
 };
 
@@ -33,10 +38,11 @@ public:
 	void select(TreeItem*);
 	void appendItem(TreeItem*);
 	void removeItem(TreeItem*);
+	void sortChildrens();
 	void clear();
 	TreeItem* hitTest();
 	TreeItem* selectedItem();
-	int size();
+	size_t size();
 protected:
 	f_onSelectItem mOnSelectionChanged = nullptr;
 	f_onClick mOnClick = nullptr;

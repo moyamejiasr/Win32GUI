@@ -51,7 +51,7 @@ void ComboBox::select(std::string str)
 		SendMessage(mHwnd, CB_SELECTSTRING, -1, (LPARAM)str.c_str());
 }
 
-int ComboBox::find(std::string str)
+LRESULT ComboBox::find(std::string str)
 {
 	if (mCreated)
 		return SendMessage(mHwnd, CB_FINDSTRING, -1, (LPARAM)str.c_str());
@@ -62,7 +62,7 @@ std::string ComboBox::at(int index)
 {
 	if (!mCreated)
 		return "";
-	int len = SendMessage(mHwnd, CB_GETLBTEXTLEN, index, NULL) + 1;
+	LRESULT len = SendMessage(mHwnd, CB_GETLBTEXTLEN, index, NULL) + 1;
 	TCHAR* buff = new TCHAR[len];
 	SendMessage(mHwnd, CB_GETLBTEXT, index, (LPARAM)buff);
 	std::string result = buff;
@@ -82,14 +82,14 @@ void ComboBox::removeString(int val)
 		SendMessage(mHwnd, CB_DELETESTRING, val, NULL);
 }
 
-int ComboBox::size()
+LRESULT ComboBox::size()
 {
 	if (mCreated)
 		return SendMessage(mHwnd, CB_GETCOUNT, NULL, NULL);
 	return 0;
 }
 
-int ComboBox::selectedIndex()
+LRESULT ComboBox::selectedIndex()
 {
 	if (mCreated)
 		return SendMessage(mHwnd, CB_GETCURSEL, NULL, NULL);

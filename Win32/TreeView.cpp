@@ -100,6 +100,12 @@ void TreeView::removeItem(TreeItem* item)
 			mItems.erase(item->mHandler);
 }
 
+void TreeView::sortChildrens()
+{
+	if (mCreated)
+		SendMessage(mHwnd, TVM_SORTCHILDREN, FALSE, (LPARAM)TVI_ROOT);
+}
+
 void TreeView::clear()
 {
 	if (mCreated)
@@ -127,7 +133,7 @@ TreeItem* TreeView::selectedItem()
 	return nullptr;
 }
 
-int TreeView::size()
+size_t TreeView::size()
 {
 	return mItems.size();
 }
@@ -151,6 +157,10 @@ LRESULT TreeView::cnotify(UINT uMsg, WPARAM wParam, LPARAM lParam)
 	}
 	case NM_RCLICK:
 	{
+		HTREEITEM hItem = TreeView_GetNextItem(mHwnd, 0, TVGN_DROPHILITE);
+		if (hItem)
+			TreeView_SelectItem(mHwnd, hItem);
+
 		if (mOnClick)
 			mOnClick(this, MouseKeys::RightButton);
 		break;
@@ -163,6 +173,10 @@ LRESULT TreeView::cnotify(UINT uMsg, WPARAM wParam, LPARAM lParam)
 	}
 	case NM_RDBLCLK:
 	{
+		HTREEITEM hItem = TreeView_GetNextItem(mHwnd, 0, TVGN_DROPHILITE);
+		if (hItem)
+			TreeView_SelectItem(mHwnd, hItem);
+
 		if (mOnDoubleClick)
 			mOnDoubleClick(this, MouseKeys::RightButton);
 		break;
@@ -173,7 +187,8 @@ LRESULT TreeView::cnotify(UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 TreeItem::TreeItem(TreeItem* parent, std::string name, int normal, int selected)
 {
-	if (parent != nullptr)
+	mParent = parent;
+	if (mParent != nullptr)
 		mStruct.hParent = parent->mHandler;
 	mStruct.hInsertAfter = TVI_LAST;
 
@@ -191,4 +206,19 @@ TreeItem::TreeItem(TreeItem* parent, std::string name, int normal, int selected)
 		mStruct.item.mask |= TVIF_SELECTEDIMAGE;
 		mStruct.item.iSelectedImage = selected;
 	}
+}
+
+void TreeItem::setLParam(LPARAM p)
+{
+	mParam = p;
+}
+
+LPARAM TreeItem::lparam()
+{
+	return mParam;
+}
+
+TreeItem* TreeItem::Parent()
+{
+	return mParent;
 }

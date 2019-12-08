@@ -53,6 +53,7 @@ using f_onHover = void(*)(Control*, bool);
 using f_onFocus = void(*)(Control*, bool);
 using f_onClick = void(*)(Control*, MouseKeys);
 using f_onDoubleClick = void(*)(Control*, MouseKeys);
+using f_onDisplayMenu = HMENU(*)(Control*);
 using f_onMenuClick = void(*)(Control*, int);
 using f_onSelectIndex = void(*)(Control*, int);
 using f_onSelectItem = void(*)(Control*, LPARAM);
@@ -86,6 +87,7 @@ public:
 	void setGlobalSleepTime(int);
 	void setOnRender(f_onRender);
 	void setOnHover(f_onHover);
+	void setOnDisplayMenu(f_onDisplayMenu);
 	void setOnMenuClick(f_onMenuClick);
 	void setVisibile(bool);
 	void setEnabled(bool);
@@ -141,6 +143,7 @@ protected:
 	static thread_local HICON mIcon;
 	static thread_local f_onRender mOnRender;
 	f_onHover mOnHover = nullptr;
+	f_onDisplayMenu mOnDisplayMenu = nullptr;
 	f_onMenuClick mOnMenuClick = nullptr;
 	bool mCreated = false;
 	bool mEnabled = true;

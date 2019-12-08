@@ -6,11 +6,15 @@ MenuItem::MenuItem(int id)
 	mInfo.fMask = MIIM_TYPE | MIIM_ID;
 	mInfo.wID = id;
 	setEnabled(true);
+	setSeparator(true);
 }
 
 MenuItem::MenuItem(int id, std::string str)
-	: MenuItem(id)
 {
+	mInfo.cbSize = sizeof(MENUITEMINFO);
+	mInfo.fMask = MIIM_TYPE | MIIM_ID;
+	mInfo.wID = id;
+	setEnabled(true);
 	setText(str);
 }
 

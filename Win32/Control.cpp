@@ -54,6 +54,11 @@ void Control::setOnHover(f_onHover call)
 	mOnHover = call;
 }
 
+void Control::setOnDisplayMenu(f_onDisplayMenu call)
+{
+	mOnDisplayMenu = call;
+}
+
 void Control::setOnMenuClick(f_onMenuClick call)
 {
 	mOnMenuClick = call;
@@ -129,7 +134,7 @@ void Control::setGlobalIcon(HICON icon)
 	mIcon = icon;
 
 	if (mCreated)
-		SetClassLong(mHwnd, GCL_HICON, (LONG)mIcon);
+		SetClassLongPtr(mHwnd, GCLP_HICON, (LONG)mIcon);
 }
 
 void Control::setContextMenu(HMENU ctl)
@@ -163,7 +168,7 @@ void Control::setStrikeout(bool state)
 
 void Control::setFont(std::string str)
 {
-	int nLen = 32 > str.size() ? 31 : str.size();
+	size_t nLen = 32 > str.size() ? 31 : str.size();
 	std::copy(str.begin(), str.end(), mLogFont.lfFaceName);
 	mLogFont.lfFaceName[nLen] = '\0';
 }
@@ -499,7 +504,14 @@ void Control::updateFont()
 
 void Control::showContextMenu(HWND window)
 {
-	if (mContextMenu != nullptr)
+	if (mOnDisplayMenu)
+	{
+		POINT p = getCursorScreenPos();
+		HMENU menu = mOnDisplayMenu(this);
+		if (menu)
+			TrackPopupMenu(menu, NULL, p.x, p.y, NULL, window, NULL);
+	}
+	else if (mContextMenu != nullptr)
 	{
 		POINT p = getCursorScreenPos();
 		TrackPopupMenu(mContextMenu, NULL, p.x, p.y, NULL, window, NULL);

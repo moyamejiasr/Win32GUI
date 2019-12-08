@@ -17,10 +17,10 @@ public:
 	void select(std::string);
 	void appendString(std::string);
 	void removeString(int);
-	int find(std::string);
+	LRESULT find(std::string);
 	std::string at(int);
-	int size();
-	int selectedIndex();
+	LRESULT size();
+	LRESULT selectedIndex();
 	std::string selectedText();
 protected:
 	ComboBox(Control*, DWORD, int, int);
