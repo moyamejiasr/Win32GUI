@@ -76,6 +76,7 @@ enum Orientation
 class Control
 {
 public:
+	~Control();
 	Control* child(int);
 	bool create();
 	void destroy();

@@ -111,7 +111,10 @@ void TextView::autosize()
 	if (!mAutoSize)
 		return;
 	SIZE size;
-	GetTextExtentPoint32(GetDC(mHwnd), mText.c_str(), mText.size(), &size);
+	HDC dc = GetDC(mHwnd);
+	SelectObject(dc, mFont);
+	GetTextExtentPoint32(dc, mText.c_str(), mText.size(), &size);
+	ReleaseDC(mHwnd, dc);
 	mWidth = size.cx; mHeight = size.cy;
 	setSize(mWidth, mHeight);
 }

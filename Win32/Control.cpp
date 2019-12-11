@@ -8,6 +8,11 @@ thread_local int Control::mLapse = 16;
 thread_local HICON Control::mIcon = LoadIcon(NULL, IDI_APPLICATION);
 thread_local f_onRender Control::mOnRender = nullptr;
 
+Control::~Control()
+{
+	this->destroy();
+}
+
 Control* Control::child(int id)
 {
 	return mChildrens[id];
