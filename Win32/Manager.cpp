@@ -2,18 +2,18 @@
 
 std::wstring ToWString(const std::string& str)
 {
-	using convert_typeX = std::codecvt_utf8<wchar_t>;
-	std::wstring_convert<convert_typeX, wchar_t> converterX;
-
-	return converterX.from_bytes(str);
+	int count = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), str.length(), NULL, 0);
+	std::wstring wstr(count, 0);
+	MultiByteToWideChar(CP_UTF8, 0, str.c_str(), str.length(), &wstr[0], count);
+	return wstr;
 }
 
 std::string ToString(const std::wstring& wstr)
 {
-	using convert_typeX = std::codecvt_utf8<wchar_t>;
-	std::wstring_convert<convert_typeX, wchar_t> converterX;
-
-	return converterX.to_bytes(wstr);
+	int count = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), wstr.length(), NULL, 0, NULL, NULL);
+	std::string str(count, 0);
+	WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, &str[0], count, NULL, NULL);
+	return str;
 }
 
 COLORREF Rgb(BYTE r, BYTE g, BYTE b)
@@ -38,7 +38,7 @@ HBRUSH Brush(COLORREF ref)
 	return CreateSolidBrush(ref);
 }
 
-HBITMAP Bitmap(std::string& dir)
+HBITMAP Bitmap(std::string dir)
 {
 	return (HBITMAP)LoadImage(NULL, dir.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
 }
@@ -53,7 +53,7 @@ HBITMAP Bitmap(HINSTANCE hInstance, WORD id)
 	return LoadBitmap(hInstance, MAKEINTRESOURCE(id));
 }
 
-HICON Icon(std::string& dir)
+HICON Icon(std::string dir)
 {
 	return (HICON)LoadImage(NULL, dir.c_str(), IMAGE_ICON, 0, 0, LR_LOADFROMFILE);
 }
@@ -76,6 +76,23 @@ HMENU Menu(WORD id)
 HMENU Menu(HINSTANCE hInstance, WORD id)
 {
 	return LoadMenu(hInstance, MAKEINTRESOURCE(id));
+}
+
+DWORD Async(LPTHREAD_START_ROUTINE func, LPVOID param)
+{
+	HANDLE h = CreateThread(NULL, NULL, func, param, NULL, NULL);
+	while (MsgWaitForMultipleObjects(1, &h,
+		FALSE, INFINITE, QS_ALLINPUT) != WAIT_OBJECT_0)
+	{
+		MSG msg;
+		while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+	}
+	DWORD code;
+	GetExitCodeThread(h, &code);
+	return code;
 }
 
 int Dialog(std::string text, std::string title, DWORD flags)

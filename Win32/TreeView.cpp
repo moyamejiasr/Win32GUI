@@ -185,6 +185,10 @@ LRESULT TreeView::cnotify(UINT uMsg, WPARAM wParam, LPARAM lParam)
 	return DefWindowProc(mHwnd, uMsg, wParam, lParam);
 }
 
+TreeItem::TreeItem()
+{
+}
+
 TreeItem::TreeItem(TreeItem* parent, std::string name, int normal, int selected)
 {
 	mParent = parent;
@@ -208,12 +212,12 @@ TreeItem::TreeItem(TreeItem* parent, std::string name, int normal, int selected)
 	}
 }
 
-void TreeItem::setLParam(LPARAM p)
+void TreeItem::setParam(LPARAM p)
 {
 	mParam = p;
 }
 
-LPARAM TreeItem::lparam()
+LPARAM TreeItem::Param()
 {
 	return mParam;
 }

@@ -28,4 +28,5 @@ protected:
 	HBITMAP mBitmap = nullptr;
 
 	virtual LRESULT execute(UINT, WPARAM, LPARAM);
+	virtual LRESULT drawctl(UINT, WPARAM, LPARAM);
 };

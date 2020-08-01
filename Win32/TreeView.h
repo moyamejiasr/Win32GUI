@@ -6,9 +6,10 @@
 class TreeItem
 {
 public:
+	TreeItem();
 	TreeItem(TreeItem*, std::string, int = -1, int = -1);
-	void setLParam(LPARAM);
-	LPARAM lparam();
+	void setParam(LPARAM);
+	LPARAM Param();
 	TreeItem* Parent();
 protected:
 	friend class TreeView;

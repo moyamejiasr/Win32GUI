@@ -5,7 +5,7 @@ PictureBox::PictureBox()
 }
 
 PictureBox::PictureBox(Control* parent, HBITMAP img, RECT rect)
-	: Control(parent, "", rect.right, rect.bottom)
+	: Control(parent, "PictureBox", rect.right, rect.bottom)
 {
 	cmnControlInit(ICC_STANDARD_CLASSES);
 	setLocation(rect.left, rect.top);
@@ -16,10 +16,9 @@ PictureBox::PictureBox(Control* parent, HBITMAP img, RECT rect)
 }
 
 PictureBox::PictureBox(Control* parent, HBITMAP img, int width, int height)
-	: Control(parent, "", width, height)
+	: Control(parent, "PictureBox", width, height)
 {
 	cmnControlInit(ICC_STANDARD_CLASSES);
-	mBitmap = img;
 	mStyle = WS_CHILD | WS_VISIBLE | SS_BITMAP | SS_NOTIFY | SS_REALSIZECONTROL;
 	mType = WC_STATIC;
 	create();
@@ -53,7 +52,7 @@ void PictureBox::setRect(RECT rect)
 void PictureBox::setBitmap(HBITMAP img)
 {
 	if (mBitmap != nullptr)
-		DeleteObject(img);
+		DeleteObject(mBitmap);
 	mBitmap = img;
 	if (mCreated)
 		SendMessage(mHwnd, STM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)mBitmap);
@@ -87,4 +86,11 @@ LRESULT PictureBox::execute(UINT uMsg, WPARAM wParam, LPARAM lParam)
 		break;
 	}
 	return true;
+}
+
+LRESULT PictureBox::drawctl(UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	SetBkMode((HDC)wParam, TRANSPARENT);
+	SetTextColor((HDC)wParam, mFtColor);
+	return (LRESULT)mBkBrush;
 }

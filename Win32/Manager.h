@@ -27,6 +27,9 @@
 
 #define Invisible (HBRUSH)GetStockObject(HOLLOW_BRUSH)
 
+typedef std::string File;
+typedef std::vector<File> FileList;
+
 // Convert from string to wstring
 std::wstring ToWString(const std::string& str);
 
@@ -49,7 +52,7 @@ COLORREF Hex(std::string hex);
 HBRUSH Brush(COLORREF ref);
 
 // Load Bitmap from file
-HBITMAP Bitmap(std::string& dir);
+HBITMAP Bitmap(std::string dir);
 
 // Load Bitmap from resource
 HBITMAP Bitmap(WORD id);
@@ -58,7 +61,7 @@ HBITMAP Bitmap(WORD id);
 HBITMAP Bitmap(HINSTANCE hInstance, WORD id);
 
 // Load Icon from file
-HICON Icon(std::string& dir);
+HICON Icon(std::string dir);
 
 // Load Icon from resource
 HICON Icon(WORD id);
@@ -72,12 +75,14 @@ HMENU Menu(WORD id);
 // Load Menu from resource
 HMENU Menu(HINSTANCE hInstance, WORD id);
 
+DWORD Async(LPTHREAD_START_ROUTINE, LPVOID);
+
 int Dialog(std::string text, std::string title = "Dialog MessageBox", DWORD flags = MB_SYSTEMMODAL | MB_OK);
 
-std::string OpenFileDialog(UINT size, const COMDLG_FILTERSPEC* c_rgFileTypes);
+File OpenFileDialog(UINT size, const COMDLG_FILTERSPEC* c_rgFileTypes);
 
-std::vector<std::string> OpenMultiFileDialog(UINT size, const COMDLG_FILTERSPEC* c_rgFileTypes);
+FileList OpenMultiFileDialog(UINT size, const COMDLG_FILTERSPEC* c_rgFileTypes);
 
-std::string SaveFileDialog(UINT size, const COMDLG_FILTERSPEC* c_rgFileTypes, std::string fName = "");
+File SaveFileDialog(UINT size, const COMDLG_FILTERSPEC* c_rgFileTypes, std::string fName = "");
 
-std::string SelectFolderDialog();
+File SelectFolderDialog();

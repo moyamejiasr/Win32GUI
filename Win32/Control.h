@@ -23,7 +23,9 @@ processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
 class Control;
 class Window;
+#ifdef _OGLWINDOW
 class OGLWindow;
+#endif
 class TextView;
 class PictureBox;
 class EditText;
